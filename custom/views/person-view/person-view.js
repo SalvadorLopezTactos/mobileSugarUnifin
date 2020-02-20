@@ -64,11 +64,16 @@ const AccountEditView = customization.extend(EditView, {
         }else{
         //Consultado registro
         //Estableciendo como solo lectura campos de promotores
-        this.model.on('sync', this.setPromotores, this);
+            this.model.on('sync', this.setPromotores, this);
 
     	}
 
-    	this.model.on('data:sync:complete', this.setLengthPhone,this); 
+        this.model.on('data:sync:complete', this.setLengthPhone,this);
+        //Bloquear registro al tener campo No Contactar
+        this.model.on('data:sync:complete', this.blockRecordNoContactar,this);
+
+        //Validación de duplicados
+        this.model.addValidationTask('duplicate_check', _.bind(this.DuplicateCheck, this));
 
         //Validación de teléfono
         this.model.addValidationTask('validatePhoneFormat', _.bind(this.validatePhoneFormat, this));
@@ -162,6 +167,24 @@ const AccountEditView = customization.extend(EditView, {
 
 },
 
+blockRecordNoContactar:function(){
+
+    if (this.model.get('tct_no_contactar_chk_c') == true) {
+
+            //Bloquear el registro completo y mostrar alerta
+            $('.field').addClass('field--readonly');
+            $('.field').attr('style','pointer-events:none');
+           
+            app.alert.show("cuentas_no_contactar", {
+                level: "error",
+                messages: "Cuenta No Contactable\nCualquier duda o aclaraci\u00F3n, favor de contactar al \u00E1rea de Administraci\u00F3n de cartera",
+                autoClose: false
+            });
+
+    }
+
+},
+
 setLengthPhone:function(){
 
 	//Agregando longitud máxima a campo de teléfono
@@ -215,8 +238,47 @@ doValidateInfoReq:function(fields, errors, callback){
             }
         }
         callback(null, fields, errors);
-}
+},
 
+DuplicateCheck: function (fields, errors, callback) {
+        //Valida homonimo
+        if (this.model.get('tct_homonimo_chk_c') != true) {
+            var clean_name = this.model.get('clean_name');
+            app.api.call("read", app.api.buildURL("Accounts/", null, null, {
+                fields: "clean_name",
+                max_num: 5,
+                "filter": [
+                    {
+                        "clean_name": clean_name,
+                        "id": {
+                            $not_equals: this.model.id,
+                        }
+                    }
+                ]
+            }), null, {
+                success: _.bind(function (data) {
+                    if (data.records.length > 0) {
+                        var usuarios = App.lang.getAppListStrings('usuarios_homonimo_name_list');
+                        var etiquetas = "";
+                        Object.keys(usuarios).forEach(function (key) {
+                            if (key != '') {
+                                etiquetas += usuarios[key] + '<br>';
+                            }
+                        });
+                        app.alert.show("DuplicateCheck", {
+                            level: "error",
+                            messages: "Ya existe una persona registrada con el mismo nombre.\nFavor de comunicarse con alguno de los siguientes usuarios:\n" + etiquetas + "",
+                            autoClose: false
+                        });
+
+                    }
+                    callback(null, fields, errors);
+                }, this)
+            });
+        } else {
+            callback(null, fields, errors);
+        }
+    }
 
 });
 
