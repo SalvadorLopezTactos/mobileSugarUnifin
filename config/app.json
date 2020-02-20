@@ -1,0 +1,52 @@
+{
+    "defaults": {
+        "native": {
+            "android": {
+                "packageName": "com.unifincrm.crm",
+                "appDownloadUrl": "",
+                "binaryName": "unifinCRM"
+            },
+            "ios": {
+                "bundleId": "com.unifincrm.crm",
+                "appDownloadUrl": "",
+                "binaryName": "unifinCRM",
+                "teamId": "73H8T8733R"
+            }
+        },
+        "jsConfig": {
+            "appName": "Unifin CRM",
+            "productName": "Unifin CRM",
+            "brandName": "Unifin CRM",
+            "appBuild": "1",
+            "appVersion": "3.1",
+            "about": {
+                "privacy": "http://unifincrm.com/mobile_privacy",
+                "tos": "http://unifincrm.com/mobile_tos",
+                "support": "support.unifincrm.com",
+                "supportEmail": "support@unifincrm.com",
+                "copyrightText": "Copyright © 2018 unifinCRMCRM Inc. All Rights Reserved.",
+                "trademarkText": "unifinCRM and unifinCRMCRM are trademarks owned by unifinCRMCRM Inc. All other trademarks are the property of their respective owners."
+            },
+            "ui": {
+                "icons": {
+                    "actions": {
+                        "barcode": "icon icon-barcode",
+                        "location": "icon icon-location-arrow",
+                        "hello": "icon icon-smile-o"
+                    }
+                }
+            }
+        }
+    },
+    "store": {
+        "native": {
+            "android": {
+                "signingKey": {
+                    "keystore": "",
+                    "storepass": "",
+                    "alias": ""
+                }
+            }
+        }
+    }
+}
