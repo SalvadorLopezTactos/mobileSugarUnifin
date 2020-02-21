@@ -58,8 +58,6 @@ const AccountEditView = customization.extend(EditView, {
                         }, self)
             });
 
-            this.model.on('change:name', this.cleanName, this);
-
 
         }else{
         //Consultado registro
@@ -67,6 +65,8 @@ const AccountEditView = customization.extend(EditView, {
             this.model.on('sync', this.setPromotores, this);
 
     	}
+
+        this.model.on('change:name', this.cleanName, this);
 
         this.model.on('data:sync:complete', this.setLengthPhone,this);
         //Bloquear registro al tener campo No Contactar
@@ -244,6 +244,12 @@ DuplicateCheck: function (fields, errors, callback) {
         //Valida homonimo
         if (this.model.get('tct_homonimo_chk_c') != true) {
             var clean_name = this.model.get('clean_name');
+
+            app.alert.show('validando_duplicados', {
+                level: 'process',
+                messages: 'Cargando...'
+            });
+
             app.api.call("read", app.api.buildURL("Accounts/", null, null, {
                 fields: "clean_name",
                 max_num: 5,
@@ -257,6 +263,7 @@ DuplicateCheck: function (fields, errors, callback) {
                 ]
             }), null, {
                 success: _.bind(function (data) {
+                    app.alert.dismiss('validando_duplicados');
                     if (data.records.length > 0) {
                         var usuarios = App.lang.getAppListStrings('usuarios_homonimo_name_list');
                         var etiquetas = "";
@@ -265,12 +272,21 @@ DuplicateCheck: function (fields, errors, callback) {
                                 etiquetas += usuarios[key] + '<br>';
                             }
                         });
-                        app.alert.show("DuplicateCheck", {
-                            level: "error",
-                            messages: "Ya existe una persona registrada con el mismo nombre.\nFavor de comunicarse con alguno de los siguientes usuarios:\n" + etiquetas + "",
-                            autoClose: false
-                        });
+                        errors['primernombre_c'] = errors['primernombre_c'] || {};
+                        errors['primernombre_c'].required = true;
 
+                        //Se muestra alerta de esta manera ya que al llegar al callback, el alert.show se oculta y no es posible ver el detalle del error
+                        dialog.showAlert("Ya existe una persona registrada con el mismo nombre.\nFavor de comunicarse con alguno de los siguientes usuarios:\n" + etiquetas + "");
+
+                        if(!_.isEmpty(errors)){
+
+                            app.alert.show("DuplicateCheck", {
+                                level: "error",
+                                messages: "Ya existe una persona registrada con el mismo nombre.\nFavor de comunicarse con alguno de los siguientes usuarios:\n" + etiquetas + "",
+                                autoClose: false
+                            });
+                                    
+                        }
                     }
                     callback(null, fields, errors);
                 }, this)
