@@ -241,6 +241,10 @@ doValidateInfoReq:function(fields, errors, callback){
 },
 
 DuplicateCheck: function (fields, errors, callback) {
+
+    //Aplicar validación solo cuando ya no existen campos requeridos por llenar
+    if(_.isEmpty(errors)){
+
         //Valida homonimo
         if (this.model.get('tct_homonimo_chk_c') != true) {
             var clean_name = this.model.get('clean_name');
@@ -294,7 +298,14 @@ DuplicateCheck: function (fields, errors, callback) {
         } else {
             callback(null, fields, errors);
         }
+
+    }else{
+
+        callback(null, fields, errors);
+
     }
+    
+}
 
 });
 

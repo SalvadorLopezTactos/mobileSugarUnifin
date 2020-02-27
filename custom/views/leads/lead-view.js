@@ -95,88 +95,92 @@ const LeadEditView = customization.extend(EditView, {
 
 	duplicateCheckLeads: function (fields, errors, callback) {
 		self=this;
-        //Valida homonimo
-        if (this.model.get('subtipo_registro_c')!= '3' && this.model.get('subtipo_registro_c')!= '4') {
-           
-            var clean_name_lead = this.model.get('clean_name_c');
-            app.alert.show('validando_duplicados', {
-            	level: 'process',
-            	messages: 'Cargando...'
-            });
+		if(_.isEmpty(errors)){
+			//Valida homonimo
+			if (this.model.get('subtipo_registro_c')!= '3' && this.model.get('subtipo_registro_c')!= '4') {
 
-            app.api.call("read", app.api.buildURL("Accounts/", null, null, {
-                fields: "clean_name",
-                max_num: 5,
-                "filter": [
-                    {
-                        "clean_name": clean_name_lead,
-                        "id": {
-                            $not_equals: this.model.id,
-                        }
-                    }
-                ]
-            }), null, {
-                success: _.bind(function (data) {
-                	app.alert.dismiss('validando_duplicados');
-                    if (data.records.length > 0) {
-                    	
-                        errors['nombre_c'] = errors['nombre_c'] || {};
-          				errors['nombre_c'].required = true;
+				var clean_name_lead = this.model.get('clean_name_c');
+				app.alert.show('validando_duplicados', {
+					level: 'process',
+					messages: 'Cargando...'
+				});
 
-                        callback(null, fields, errors);
-                        if(!_.isEmpty(errors)){
-                    				app.alert.show("duplicateCheck_leads_mssg", {
-                    					level: "error",
-                    					messages: "El registro que intentas guardar ya existe como Cuenta",
-                    					autoClose: false
-                    				});
-                    	}
-                        
-                    }else{
-                    	var name_lead_clean = self.model.get('clean_name_c');
-                    	app.alert.show('validando_duplicados', {
-                    		level: 'process',
-                    		messages: 'Cargando...'
-                    	});
-                    	app.api.call("read",app.api.buildURL("Leads/",null,null,{
-                    		fields: "clean_name_c",
-                    		max_num: 5,
-                    		"filter": [{
-                    			"clean_name_c": name_lead_clean,
-                    			"id": {
-                    				$not_equals: self.model.id,
-                    				}
-                    			}
-                			]
+				app.api.call("read", app.api.buildURL("Accounts/", null, null, {
+					fields: "clean_name",
+					max_num: 5,
+					"filter": [
+					{
+						"clean_name": clean_name_lead,
+						"id": {
+							$not_equals: this.model.id,
+						}
+					}
+					]
+				}), null, {
+					success: _.bind(function (data) {
+						app.alert.dismiss('validando_duplicados');
+						if (data.records.length > 0) {
 
-                    	}),null,{
-                    		success:_.bind(function(data){
-                    			app.alert.dismiss('validando_duplicados');
-                    			if(data.records.length>0){
-                    				
-                    				errors['nombre_c'] = errors['nombre_c'] || {};
-                    				errors['nombre_c'].required = true;
-                    			}
+							errors['nombre_c'] = errors['nombre_c'] || {};
+							errors['nombre_c'].required = true;
 
-                    			callback(null, fields, errors);
-                    			if(!_.isEmpty(errors)){
-                    				app.alert.show("duplicateCheck_leads_mssg_1",{
-                    					level: "error",
-                    					messages: "El registro que intentas guardar ya existe como Lead",
-                    					autoClose: false
-                    				});
-                    			}
+							callback(null, fields, errors);
+							if(!_.isEmpty(errors)){
+								app.alert.show("duplicateCheck_leads_mssg", {
+									level: "error",
+									messages: "El registro que intentas guardar ya existe como Cuenta",
+									autoClose: false
+								});
+							}
 
-                    		},self)
+						}else{
+							var name_lead_clean = self.model.get('clean_name_c');
+							app.alert.show('validando_duplicados', {
+								level: 'process',
+								messages: 'Cargando...'
+							});
+							app.api.call("read",app.api.buildURL("Leads/",null,null,{
+								fields: "clean_name_c",
+								max_num: 5,
+								"filter": [{
+									"clean_name_c": name_lead_clean,
+									"id": {
+										$not_equals: self.model.id,
+									}
+								}
+								]
+
+							}),null,{
+								success:_.bind(function(data){
+									app.alert.dismiss('validando_duplicados');
+									if(data.records.length>0){
+
+										errors['nombre_c'] = errors['nombre_c'] || {};
+										errors['nombre_c'].required = true;
+									}
+
+									callback(null, fields, errors);
+									if(!_.isEmpty(errors)){
+										app.alert.show("duplicateCheck_leads_mssg_1",{
+											level: "error",
+											messages: "El registro que intentas guardar ya existe como Lead",
+											autoClose: false
+										});
+									}
+
+								},self)
 
                     	});//Fin api call
-                    }
-                    
-                }, self)
-            });
-        } else {
-            callback(null, fields, errors);
-        }
+						}
+
+					}, self)
+				});
+			} else {
+				callback(null, fields, errors);
+			}
+		}else{
+			callback(null, fields, errors);
+		}
     }
 
 });
