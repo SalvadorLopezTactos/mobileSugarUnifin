@@ -72,13 +72,13 @@ const AccountEditView = customization.extend(EditView, {
         //Bloquear registro al tener campo No Contactar
         this.model.on('data:sync:complete', this.blockRecordNoContactar,this);
 
-        //Validación de duplicados
-        this.model.addValidationTask('duplicate_check', _.bind(this.DuplicateCheck, this));
-
         //Validación de teléfono
         this.model.addValidationTask('validatePhoneFormat', _.bind(this.validatePhoneFormat, this));
 
         this.model.addValidationTask('check_info', _.bind(this.doValidateInfoReq, this));
+
+        //Validación de duplicados
+        this.model.addValidationTask('duplicate_check', _.bind(this.DuplicateCheck, this));
         
     },
 
@@ -174,6 +174,9 @@ blockRecordNoContactar:function(){
             //Bloquear el registro completo y mostrar alerta
             $('.field').addClass('field--readonly');
             $('.field').attr('style','pointer-events:none');
+
+            //Bloqueo de botón Guardar
+            $('.header__btn--save ').addClass('disabled').attr('style','pointer-events:none');
            
             app.alert.show("cuentas_no_contactar", {
                 level: "error",

@@ -83,6 +83,9 @@ const LeadEditView = customization.extend(EditView, {
 	            //Bloquear el registro completo y mostrar alerta
 	            $('.field').addClass('field--readonly');
 	            $('.field').attr('style','pointer-events:none');
+
+	            //Bloqueo de botón Guardar
+	            $('.header__btn--save ').addClass('disabled').attr('style','pointer-events:none');
 	           
 	            app.alert.show("lead_convertido", {
 	                level: "error",
