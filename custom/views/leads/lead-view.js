@@ -77,6 +77,19 @@ const LeadEditView = customization.extend(EditView, {
     },
 
     blockLeadConvertido:function(){
+    	if (this.model.get('lead_cancelado_c') == '1' && this.model.get('subtipo_registro_c') == '3') {
+    		//Bloquear el registro completo y mostrar alerta
+    		$('.field').addClass('field--readonly');
+    		$('.field').attr('style','pointer-events:none');
+
+    		//Bloqueo de botón Guardar
+    		$('.header__btn--save ').addClass('disabled').attr('style','pointer-events:none');
+    		app.alert.show("lead_bloqueado", {
+    			level: "error",
+    			messages: "Lead No Editable\nEste registro ha sido bloqueado pues se encuentra como Cancelado",
+    			autoClose: false
+	         });
+        }
 
 	    if (this.model.get('subtipo_registro_c') == '4') {
 
