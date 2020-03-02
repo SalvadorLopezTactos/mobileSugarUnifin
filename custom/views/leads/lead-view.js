@@ -153,11 +153,10 @@ const LeadEditView = customization.extend(EditView, {
                 messages: 'Los siguientes campos no permiten Caracteres Especiales y Números:\n' + camponame,
                 autoClose: false
             });
+
+            dialog.showAlert('Los siguientes campos no permiten Caracteres Especiales y Números:\n'+ camponame);
         }
         callback(null, fields, errors);
-
-        dialog.showAlert('Los siguientes campos no permiten Caracteres Especiales y Números:\n'+ camponame);
-
 	},
 
 	duplicateCheckLeads: function (fields, errors, callback) {

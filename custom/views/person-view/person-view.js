@@ -1,3 +1,4 @@
+
 const app = SUGAR.App;
 const customization = require('%app.core%/customization.js');
 const dialog = require('%app.core%/dialog');
@@ -290,15 +291,10 @@ checkTextOnly:function(fields, errors, callback){
         callback(null, fields, errors);
 
         if (camponame && !_.isEmpty(errors)){
-            app.alert.show("Error_validacion_Campos", {
-                level: "error",
-                messages: 'Los siguientes campos no permiten caracteres especiales:\n'+ camponame,
-                autoClose: false
-            });
+            //Se utiliza dialog ya que al utilizar app.alert.show, como entra en función callback
+            //el msj se oculta y no se alcanza a ver el detalle del error
+            dialog.showAlert('Los siguientes campos no permiten caracteres especiales:\n'+ camponame);
         }
-        //Se utiliza dialog ya que al utilizar app.alert.show, como entra en función callback
-        //el msj se oculta y no se alcanza a ver el detalle del error
-        dialog.showAlert('Los siguientes campos no permiten caracteres especiales:\n'+ camponame);
 },
 
 DuplicateCheck: function (fields, errors, callback) {
