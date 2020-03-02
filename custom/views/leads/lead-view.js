@@ -1,6 +1,7 @@
 const app = SUGAR.App;
 const customization = require('%app.core%/customization.js');
 const EditView = require('%app.views.edit%/edit-view');
+const dialog = require('%app.core%/dialog');
 
 const LeadEditView = customization.extend(EditView, {
 	initialize(options) {
@@ -10,6 +11,9 @@ const LeadEditView = customization.extend(EditView, {
 
         //Bloquear registro al tener campo No Contactar
         this.model.on('data:sync:complete', this.blockLeadConvertido,this);
+
+        //Validación para caracteres especiales en campos de nombres
+        this.model.addValidationTask('check_TextOnlyLeads', _.bind(this.checkTextOnlyLeads, this));
 
         //Validación de duplicados
         this.model.addValidationTask('duplicate_check_leads', _.bind(this.duplicateCheckLeads, this));
@@ -107,6 +111,53 @@ const LeadEditView = customization.extend(EditView, {
 	            });
 
 	    }
+	},
+
+	checkTextOnlyLeads:function(fields, errors, callback){
+
+		var camponame = "";
+        var expresion = new RegExp(/^[a-zA-ZÀ-ÿ\s]*$/g);
+
+        if (this.model.get('nombre_c') != "" && this.model.get('nombre_c') != undefined) {
+            var nombre = this.model.get('nombre_c');
+            var comprueba = expresion.test(nombre);
+            if (comprueba != true) {
+                camponame = camponame + '' + app.lang.get("LBL_NOMBRE", "Leads") + '\n';
+                errors['nombre_c'] = errors['nombre_c'] || {};
+                errors['nombre_c'].required = true;
+            }
+        }
+        if (this.model.get('apellido_paterno_c') != "" && this.model.get('apellido_paterno_c') != undefined) {
+            var apaterno = this.model.get('apellido_paterno_c');
+            var expresion = new RegExp(/^[a-zA-ZÀ-ÿ\s]*$/g);
+            var validaap = expresion.test(apaterno);
+            if (validaap != true) {
+                camponame = camponame + '' + app.lang.get("LBL_APELLIDO_PATERNO_C", "Leads") + '\n';
+                errors['apellido_paterno_c'] = errors['apellido_paterno_c'] || {};
+                errors['apellido_paterno_c'].required = true;
+            }
+        }
+        if (this.model.get('apellido_materno_c') != "" && this.model.get('apellido_materno_c') != undefined) {
+            var amaterno = this.model.get('apellido_materno_c');
+            var expresion = new RegExp(/^[a-zA-ZÀ-ÿ\s]*$/g);
+            var validaam = expresion.test(amaterno);
+            if (validaam != true) {
+                camponame = camponame + '' + app.lang.get("LBL_APELLIDO_MATERNO_C", "Leads") + '\n';
+                errors['apellido_materno_c'] = errors['apellido_materno_c'] || {};
+                errors['apellido_materno_c'].required = true;
+            }
+        }
+        if (camponame) {
+            app.alert.show("Error_validacion_Campos", {
+                level: "error",
+                messages: 'Los siguientes campos no permiten Caracteres Especiales y Números:\n' + camponame,
+                autoClose: false
+            });
+        }
+        callback(null, fields, errors);
+
+        dialog.showAlert('Los siguientes campos no permiten Caracteres Especiales y Números:\n'+ camponame);
+
 	},
 
 	duplicateCheckLeads: function (fields, errors, callback) {

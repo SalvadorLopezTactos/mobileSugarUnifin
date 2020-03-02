@@ -1,4 +1,3 @@
-
 const app = SUGAR.App;
 const customization = require('%app.core%/customization.js');
 const dialog = require('%app.core%/dialog');
@@ -6,6 +5,11 @@ const AddressEditView = require('%app.views%/edit/address-edit-view');
 const EditView = require('%app.views.edit%/edit-view');
 
 const AccountEditView = customization.extend(EditView, {
+
+    events: {
+        'keyup ._numeric': 'setLengthCurrency' 
+    },
+
 	initialize(options) {
 		this._super(options);
 
@@ -76,10 +80,17 @@ const AccountEditView = customization.extend(EditView, {
         this.model.addValidationTask('validatePhoneFormat', _.bind(this.validatePhoneFormat, this));
 
         this.model.addValidationTask('check_info', _.bind(this.doValidateInfoReq, this));
+        //Validación para caracteres especiales en campos de nombres
+        this.model.addValidationTask('check_TextOnly', _.bind(this.checkTextOnly, this));
 
         //Validación de duplicados
         this.model.addValidationTask('duplicate_check', _.bind(this.DuplicateCheck, this));
         
+    },
+
+    setLengthCurrency:function(e){
+        //Se establece longitud máxima para campos de moneda
+        $(e.currentTarget).attr('maxlength','15');
     },
 
     cleanName: function(){
@@ -241,6 +252,53 @@ doValidateInfoReq:function(fields, errors, callback){
             }
         }
         callback(null, fields, errors);
+},
+
+checkTextOnly:function(fields, errors, callback){
+
+        var camponame= "";
+        var expresion = new RegExp(/^[a-zA-ZÀ-ÿ\s]*$/g);
+        if (this.model.get('primernombre_c')!="" && this.model.get('primernombre_c')!=undefined){
+            var nombre=this.model.get('primernombre_c');
+            var comprueba = expresion.test(nombre);
+            if(comprueba!= true){
+                camponame= camponame + '-Primer Nombre\n';
+                errors['primernombre_c'] = errors['primernombre_c'] || {};
+                errors['primernombre_c'].required = true;
+            }
+        }
+        if (this.model.get('apellidopaterno_c')!="" && this.model.get('apellidopaterno_c')!= undefined){
+            var apaterno=this.model.get('apellidopaterno_c');
+            var expresion = new RegExp(/^[a-zA-ZÀ-ÿ\s]*$/g);
+            var validaap = expresion.test(apaterno);
+            if(validaap!= true){
+                camponame= camponame + '-Apellido Paterno\n';
+                errors['apellidopaterno_c'] = errors['apellidopaterno_c'] || {};
+                errors['apellidopaterno_c'].required = true;
+            }
+        }
+        if (this.model.get('apellidomaterno_c')!="" && this.model.get('apellidomaterno_c')!= undefined){
+            var amaterno=this.model.get('apellidomaterno_c');
+            var expresion = new RegExp(/^[a-zA-ZÀ-ÿ\s]*$/g);
+            var validaam = expresion.test(amaterno);
+            if(validaam!= true){
+                camponame= camponame + '-Apellido Materno\n';
+                errors['apellidomaterno_c'] = errors['apellidomaterno_c'] || {};
+                errors['apellidomaterno_c'].required = true;
+            }
+        }
+        callback(null, fields, errors);
+
+        if (camponame && !_.isEmpty(errors)){
+            app.alert.show("Error_validacion_Campos", {
+                level: "error",
+                messages: 'Los siguientes campos no permiten caracteres especiales:\n'+ camponame,
+                autoClose: false
+            });
+        }
+        //Se utiliza dialog ya que al utilizar app.alert.show, como entra en función callback
+        //el msj se oculta y no se alcanza a ver el detalle del error
+        dialog.showAlert('Los siguientes campos no permiten caracteres especiales:\n'+ camponame);
 },
 
 DuplicateCheck: function (fields, errors, callback) {
