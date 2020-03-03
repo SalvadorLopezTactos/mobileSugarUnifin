@@ -198,6 +198,8 @@ blockRecordNoContactar:function(){
 
     }
 
+    //Se oculta el botón de eliminar
+    $('.edit__footer').children().hide();
 },
 
 setLengthPhone:function(){

@@ -111,6 +111,9 @@ const LeadEditView = customization.extend(EditView, {
 	            });
 
 	    }
+
+	    //Se oculta el botón de eliminar
+	    $('.edit__footer').children().hide();
 	},
 
 	checkTextOnlyLeads:function(fields, errors, callback){
