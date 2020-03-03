@@ -83,6 +83,9 @@ const AccountEditView = customization.extend(EditView, {
         this.model.addValidationTask('check_info', _.bind(this.doValidateInfoReq, this));
         //Validación para caracteres especiales en campos de nombres
         this.model.addValidationTask('check_TextOnly', _.bind(this.checkTextOnly, this));
+        
+        //validación para mostrar en texto el nombre de los campos requeridos
+        this.model.addValidationTask('valida_requeridos',_.bind(this.valida_requeridos, this));
 
         //Validación de duplicados
         this.model.addValidationTask('duplicate_check', _.bind(this.DuplicateCheck, this));
@@ -298,6 +301,51 @@ checkTextOnly:function(fields, errors, callback){
             dialog.showAlert('Los siguientes campos no permiten caracteres especiales:\n'+ camponame);
         }
 },
+
+valida_requeridos: function(fields, errors, callback) {
+        var campos = "";
+        _.each(errors, function(value, key) {
+            _.each(this.model.fields, function(field) {
+                if(_.isEqual(field.name,key)) {
+                    if(field.vname) {
+                        if(field.vname == 'LBL_PAIS_NACIMIENTO_C' && this.model.get('tipodepersona_c') == 'Persona Moral')
+                        {
+                          campos = campos + 'País de constitución\n';
+                        }
+                        else
+                        {
+                          if(field.vname == 'LBL_ESTADO_NACIMIENTO' && this.model.get('tipodepersona_c') == 'Persona Moral')
+                          {
+                            campos = campos + 'Estado de constitución\n';
+                          }
+                          else
+                          {
+                            campos = campos + '' + app.lang.get(field.vname, "Accounts") + '\n';
+                          }
+                        }
+                    }
+                  }
+            }, this);
+        }, this);
+        //Remueve campos custom: Teléfonos, Direcciones, Correo
+        campos = campos.replace("Telefonos\n","");
+        campos = campos.replace("Direcciones\n","");
+        campos = campos.replace("Dirección de Correo Electrónico\n","");
+        if(campos) {
+            app.alert.show("Campos Requeridos", {
+                level: "error",
+                messages: "Hace falta completar la siguiente información en la Cuenta:\n" + campos,
+                autoClose: false
+            });
+        }
+        callback(null, fields, errors);
+
+        if (campos){
+            //Se utiliza dialog ya que al utilizar app.alert.show, como entra en función callback
+            //el msj se oculta y no se alcanza a ver el detalle del error
+            dialog.showAlert('Hace falta completar la siguiente información en la Cuenta:\n' + campos);
+        }
+    },
 
 DuplicateCheck: function (fields, errors, callback) {
 

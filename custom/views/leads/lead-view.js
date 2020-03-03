@@ -15,9 +15,22 @@ const LeadEditView = customization.extend(EditView, {
         //Validación para caracteres especiales en campos de nombres
         this.model.addValidationTask('check_TextOnlyLeads', _.bind(this.checkTextOnlyLeads, this));
 
+        //validación para mostrar en texto el nombre de los campos requeridos
+        this.model.addValidationTask('check_Requeridos', _.bind(this.valida_requeridos, this));
+
         //Validación de duplicados
         this.model.addValidationTask('duplicate_check_leads', _.bind(this.duplicateCheckLeads, this));
         
+    },
+
+    onAfterShow(){
+    	//Condición generada para evitar error que se presentaba cuando
+    	//Se guardaba, el campo se seguía pidiendo como requerido aunque éste ya tuviera valor en el front
+    	if(this.model.get('origen_c')==null){
+
+    		this.model.set('origen_c',"");
+    	}
+
     },
 
     cleanName: function(){
@@ -161,6 +174,102 @@ const LeadEditView = customization.extend(EditView, {
         }
         callback(null, fields, errors);
 	},
+
+	valida_requeridos: function (fields, errors, callback) {
+        var campos = "";
+        var subTipoLead = this.model.get('subtipo_registro_c');
+        var tipoPersona = this.model.get('regimen_fiscal_c');
+        var campos_req = ['origen_c'];
+
+        switch (subTipoLead) {
+            /*******SUB-TIPO SIN CONTACTAR*****/
+            case '1':
+                if (tipoPersona == 'Persona Moral') {
+                    campos_req.push('nombre_empresa_c');
+                }
+                else {
+                    campos_req.push('nombre_c', 'apellido_paterno_c');
+                }
+                break;
+            /********SUB-TIPO CONTACTADO*******/
+            case '2':
+                if (tipoPersona == 'Persona Moral') {
+                    campos_req.push('nombre_empresa_c');
+                }
+                else {
+                    campos_req.push('nombre_c', 'apellido_paterno_c', 'apellido_materno_c');
+                }
+                break;
+
+            default:
+                break;
+        }
+
+        if (campos_req.length > 0) {
+
+            for (i = 0; i < campos_req.length; i++) {
+
+                var temp_req = campos_req[i];
+
+                if (this.model.get(temp_req) == '' || this.model.get(temp_req) == null) {
+                    errors[temp_req] = errors[temp_req] || {};
+                    errors[temp_req].required = true;
+                }
+            }
+        }
+
+        _.each(errors, function (value, key) {
+            _.each(this.model.fields, function (field) {
+                if (_.isEqual(field.name, key)) {
+                    if (field.vname) {
+                        campos = campos + '' + app.lang.get(field.vname, "Leads") + '\n';
+                    }
+                }
+            }, this);
+        }, this);
+
+        if (((this.model.get('phone_mobile') == '' || this.model.get('phone_mobile') == null) &&
+            (this.model.get('phone_home') == '' || this.model.get('phone_home') == null) &&
+            (this.model.get('phone_work') == '' || this.model.get('phone_work') == null)) &&
+            this.model.get('subtipo_registro_c') == '2') {
+
+            campos = campos + '' + 'Al menos un Teléfono' + '\n';
+            campos = campos.replace("Móvil\n", "");
+            campos = campos.replace("Teléfono de casa\n", "");
+            campos = campos.replace("Teléfono de Oficina\n", "");
+
+            errors['phone_mobile'] = errors['phone_mobile'] || {};
+            errors['phone_mobile'].required = true;
+            errors['phone_home'] = errors['phone_home'] || {};
+            errors['phone_home'].required = true;
+            errors['phone_work'] = errors['phone_work'] || {};
+            errors['phone_work'].required = true;
+        }
+        /*****CHECK LEAD CANCELAR*********/
+        if (this.model.get('lead_cancelado_c') == '1') {
+            if (this.model.get('motivo_cancelacion_c') == '' || this.model.get('motivo_cancelacion_c') == null) {
+
+                campos = campos + '' + app.lang.get("LBL_MOTIVO_CANCELACION_C", "Leads") + '\n';
+                errors['motivo_cancelacion_c'] = errors['motivo_cancelacion_c'] || {};
+                errors['motivo_cancelacion_c'].required = true;
+            }
+        }
+        if (campos) {
+            app.alert.show("Campos Requeridos", {
+                level: "error",
+                messages: "Hace falta completar la siguiente información para guardar un <b>Lead: </b><br>" + campos,
+                autoClose: false
+            });
+        }
+
+        callback(null, fields, errors);
+
+        if (campos){
+            //Se utiliza dialog ya que al utilizar app.alert.show, como entra en función callback
+            //el msj se oculta y no se alcanza a ver el detalle del error
+            dialog.showAlert("Hace falta completar la siguiente información para guardar un Lead:\n" + campos);
+        }
+    },
 
 	duplicateCheckLeads: function (fields, errors, callback) {
 		self=this;
