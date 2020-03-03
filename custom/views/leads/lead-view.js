@@ -4,6 +4,9 @@ const EditView = require('%app.views.edit%/edit-view');
 const dialog = require('%app.core%/dialog');
 
 const LeadEditView = customization.extend(EditView, {
+	events: {
+        'keypress input[type="tel"]': 'isNumberKeyLeads'
+    },
 	initialize(options) {
 		this._super(options);
 
@@ -32,6 +35,15 @@ const LeadEditView = customization.extend(EditView, {
     	}
 
     },
+
+    isNumberKeyLeads:function(evt){
+    	var charCode = (evt.which) ? evt.which : event.keyCode;
+
+    	if (charCode > 31 && (charCode < 48 || charCode > 57)){
+    		return false;
+    	}
+    	return true;
+	},
 
     cleanName: function(){
 

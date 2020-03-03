@@ -8,7 +8,8 @@ const EditView = require('%app.views.edit%/edit-view');
 const AccountEditView = customization.extend(EditView, {
 
     events: {
-        'keyup ._numeric': 'setLengthCurrency' 
+        'keyup ._numeric': 'setLengthCurrency',
+        'keypress input[type="tel"]': 'isNumberKey'
     },
 
 	initialize(options) {
@@ -210,6 +211,16 @@ setLengthPhone:function(){
 	//Agregando longitud máxima a campo de teléfono
     $('input[type="tel"]').attr('maxlength',"10");
 
+},
+
+isNumberKey:function(evt){
+    var charCode = (evt.which) ? evt.which : event.keyCode
+
+    if (charCode > 31 && (charCode < 48 || charCode > 57)){
+        return false;
+    }
+    
+    return true;
 },
 
 validatePhoneFormat:function(fields, errors, callback){
