@@ -18,6 +18,9 @@ const LeadEditView = customization.extend(EditView, {
         //Validación para caracteres especiales en campos de nombres
         this.model.addValidationTask('check_TextOnlyLeads', _.bind(this.checkTextOnlyLeads, this));
 
+        //Validación de teléfono
+        this.model.addValidationTask('validatePhoneFormatLeads', _.bind(this.validatePhoneFormatLeads, this));
+
         //validación para mostrar en texto el nombre de los campos requeridos
         this.model.addValidationTask('check_Requeridos', _.bind(this.valida_requeridos, this));
 
@@ -187,6 +190,80 @@ const LeadEditView = customization.extend(EditView, {
         callback(null, fields, errors);
 	},
 
+	validatePhoneFormatLeads:function(fields, errors, callback){
+
+		var expreg =/^[0-9]{8,10}$/;
+
+		//Teléfono móvil
+		if( this.model.get('phone_mobile') != "" && this.model.get('phone_mobile') != undefined){
+			
+			if(!expreg.test(this.model.get('phone_mobile'))){
+				errors['phone_mobile'] = {'required':true};
+				errors['phone_mobile']= {'Formato incorrecto, el tel\u00E9fono debe contener entre 8 y 10 d\u00EDgitos.':true};
+			}
+			var cont=0;
+
+			var lengthTel=this.model.get('phone_mobile').length;
+			var num_tel=this.model.get('phone_mobile');
+		
+			//Checando número de teléfono con únicamente caracteres repetidos
+			var arr_nums_tel=num_tel.split(num_tel.charAt(0));
+
+			if( arr_nums_tel.length-1 == lengthTel ){
+				errors['phone_mobile'] = {'required':true};
+				errors['phone_mobile']= {'Tel\u00E9fono Inv\u00E1lido, caracteres repetidos':true};
+			}
+
+		}
+
+		//Teléfono de casa
+		if( this.model.get('phone_home') != "" && this.model.get('phone_home') != undefined){
+			
+			if(!expreg.test(this.model.get('phone_home'))){
+				errors['phone_home'] = {'required':true};
+				errors['phone_home']= {'Formato incorrecto, el tel\u00E9fono debe contener entre 8 y 10 d\u00EDgitos.':true};
+			}
+			var cont=0;
+
+			var lengthTel=this.model.get('phone_home').length;
+			var num_tel=this.model.get('phone_home');
+		
+			//Checando número de teléfono con únicamente caracteres repetidos
+			var arr_nums_tel=num_tel.split(num_tel.charAt(0));
+
+			if( arr_nums_tel.length-1 == lengthTel ){
+				errors['phone_home'] = {'required':true};
+				errors['phone_home']= {'Tel\u00E9fono Inv\u00E1lido, caracteres repetidos':true};
+			}
+
+		}
+
+		//Teléfono de oficina
+		if( this.model.get('phone_work') != "" && this.model.get('phone_work') != undefined){
+			
+			if(!expreg.test(this.model.get('phone_work'))){
+				errors['phone_work'] = {'required':true};
+				errors['phone_work']= {'Formato incorrecto, el tel\u00E9fono debe contener entre 8 y 10 d\u00EDgitos.':true};
+			}
+			var cont=0;
+
+			var lengthTel=this.model.get('phone_work').length;
+			var num_tel=this.model.get('phone_work');
+		
+			//Checando número de teléfono con únicamente caracteres repetidos
+			var arr_nums_tel=num_tel.split(num_tel.charAt(0));
+
+			if( arr_nums_tel.length-1 == lengthTel ){
+				errors['phone_work'] = {'required':true};
+				errors['phone_work']= {'Tel\u00E9fono Inv\u00E1lido, caracteres repetidos':true};
+			}
+
+		}
+              
+    	callback(null, fields, errors);
+
+	},
+
 	valida_requeridos: function (fields, errors, callback) {
         var campos = "";
         var subTipoLead = this.model.get('subtipo_registro_c');
@@ -219,7 +296,7 @@ const LeadEditView = customization.extend(EditView, {
 
         if (campos_req.length > 0) {
 
-            for (i = 0; i < campos_req.length; i++) {
+            for (var i = 0; i < campos_req.length; i++) {
 
                 var temp_req = campos_req[i];
 
@@ -266,6 +343,7 @@ const LeadEditView = customization.extend(EditView, {
                 errors['motivo_cancelacion_c'].required = true;
             }
         }
+
         if (campos) {
             app.alert.show("Campos Requeridos", {
                 level: "error",

@@ -248,8 +248,7 @@ validatePhoneFormat:function(fields, errors, callback){
 		}
 
 	}
-
-		              
+              
     callback(null, fields, errors);   
 
 },
