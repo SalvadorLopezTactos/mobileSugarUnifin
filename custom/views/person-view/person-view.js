@@ -12,6 +12,12 @@ const AccountEditView = customization.extend(EditView, {
         'keypress input[type="tel"]': 'isNumberKey'
     },
 
+    list_check:null,
+
+    simbolos:null,
+
+    usuarios:null,
+
 	initialize(options) {
 		this._super(options);
 
@@ -71,6 +77,7 @@ const AccountEditView = customization.extend(EditView, {
             this.model.on('sync', this.setPromotores, this);
 
     	}
+        this.getListValues();
 
         this.model.on('change:name', this.cleanName, this);
 
@@ -93,6 +100,55 @@ const AccountEditView = customization.extend(EditView, {
         
     },
 
+    /*Función generada para obtener los valores de las listas validacion_duplicados_list y validacion_simbolos_list a través de un api call
+    ya que dichos valores no se están obteniendo desde metadata con app.lang.getAppListStrings
+    */
+    getListValues(){
+        self=this;
+        app.alert.show('getlists', {
+                level: 'process',
+                messages: 'Cargando...'
+            });
+        app.api.call('GET', app.api.buildURL('GetDropdownList/validacion_duplicados_list'), null, {
+                success: _.bind(function (data) {
+                    app.alert.dismiss('getlists');
+                    if (data) {
+                        self.list_check=data;
+                        
+                    }
+                }, self),
+            });
+
+        app.alert.show('getlists', {
+                level: 'process',
+                messages: 'Cargando...'
+            });
+        app.api.call('GET', app.api.buildURL('GetDropdownList/validacion_simbolos_list'), null, {
+                success: _.bind(function (data) {
+                    app.alert.dismiss('getlists');
+                    if (data) {
+                        self.simbolos=data;
+                        
+                    }
+                }, this),
+            });
+
+        app.alert.show('getlists', {
+                level: 'process',
+                messages: 'Cargando...'
+            });
+        app.api.call('GET', app.api.buildURL('GetDropdownList/usuarios_homonimo_name_list'), null, {
+                success: _.bind(function (data) {
+                    app.alert.dismiss('getlists');
+                    if (data) {
+                        self.usuarios=data;
+                        
+                    }
+                }, this),
+            });
+
+    },
+
     onAfterShow(){
 
         //Se establece función para evitar 'bug' que hace que se muestre 'Teléfonos' en el placeholder
@@ -107,18 +163,18 @@ const AccountEditView = customization.extend(EditView, {
     },
 
     cleanName: function(){
-
+        self=this;
         //Recupera variables
         var original_name = this.model.get("name");
-        var list_check = app.lang.getAppListStrings('validacion_duplicados_list');
-        var simbolos = app.lang.getAppListStrings('validacion_simbolos_list');
+        //var list_check = app.lang.getAppListStrings('validacion_duplicados_list');
+        //var simbolos = app.lang.getAppListStrings('validacion_simbolos_list');
         //Define arreglos para guardar nombre de cuenta
             var clean_name_split = [];
             var clean_name_split_full = [];
             clean_name_split = original_name.split(" ");
             //Elimina simbolos: Ej. . , -
             _.each(clean_name_split, function (value, key) {
-                _.each(simbolos, function (simbolo, index) {
+                _.each(self.simbolos, function (simbolo, index) {
                     var clean_value = value.split(simbolo).join('');
                     if (clean_value != value) {
                         clean_name_split[key] = clean_value;
@@ -131,7 +187,7 @@ const AccountEditView = customization.extend(EditView, {
             //Elimina tipos de sociedad: Ej. SA, de , CV...
             var totalVacio = 0;
             _.each(clean_name_split, function (value, key) {
-                _.each(list_check, function (index, nomenclatura) {
+                _.each(self.list_check, function (index, nomenclatura) {
                     var upper_value = value.toUpperCase();
                     if (upper_value == nomenclatura) {
                         var clean_value = upper_value.replace(nomenclatura, "");
@@ -366,7 +422,7 @@ valida_requeridos: function(fields, errors, callback) {
     },
 
 DuplicateCheck: function (fields, errors, callback) {
-
+    self=this;
     //Aplicar validación solo cuando ya no existen campos requeridos por llenar
     if(_.isEmpty(errors)){
 
@@ -394,11 +450,11 @@ DuplicateCheck: function (fields, errors, callback) {
                 success: _.bind(function (data) {
                     app.alert.dismiss('validando_duplicados');
                     if (data.records.length > 0) {
-                        var usuarios = App.lang.getAppListStrings('usuarios_homonimo_name_list');
+                        //var usuarios = App.lang.getAppListStrings('usuarios_homonimo_name_list');
                         var etiquetas = "";
-                        Object.keys(usuarios).forEach(function (key) {
+                        Object.keys(self.usuarios).forEach(function (key) {
                             if (key != '') {
-                                etiquetas += usuarios[key] + '<br>';
+                                etiquetas += self.usuarios[key] + '\n';
                             }
                         });
                         errors['primernombre_c'] = errors['primernombre_c'] || {};

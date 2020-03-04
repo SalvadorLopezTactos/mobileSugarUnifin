@@ -4,11 +4,19 @@ const EditView = require('%app.views.edit%/edit-view');
 const dialog = require('%app.core%/dialog');
 
 const LeadEditView = customization.extend(EditView, {
+
 	events: {
         'keypress input[type="tel"]': 'isNumberKeyLeads'
     },
+
+    list_check:null,
+
+    simbolos:null,
+
 	initialize(options) {
 		this._super(options);
+
+		this.getListValues();
 
         this.model.on('change:name_c', this.cleanName, this);        
 
@@ -27,6 +35,40 @@ const LeadEditView = customization.extend(EditView, {
         //Validación de duplicados
         this.model.addValidationTask('duplicate_check_leads', _.bind(this.duplicateCheckLeads, this));
         
+    },
+
+    /*Función generada para obtener los valores de las listas validacion_duplicados_list y validacion_simbolos_list a través de un api call
+    ya que dichos valores no se están obteniendo desde metadata con app.lang.getAppListStrings
+    */
+    getListValues(){
+        self=this;
+        app.alert.show('getlists', {
+                level: 'process',
+                messages: 'Cargando...'
+            });
+        app.api.call('GET', app.api.buildURL('GetDropdownList/validacion_duplicados_list'), null, {
+                success: _.bind(function (data) {
+                    app.alert.dismiss('getlists');
+                    if (data) {
+                        self.list_check=data;
+                        
+                    }
+                }, self),
+            });
+
+        app.alert.show('getlists', {
+                level: 'process',
+                messages: 'Cargando...'
+            });
+        app.api.call('GET', app.api.buildURL('GetDropdownList/validacion_simbolos_list'), null, {
+                success: _.bind(function (data) {
+                    app.alert.dismiss('getlists');
+                    if (data) {
+                        self.simbolos=data;
+                        
+                    }
+                }, this),
+            });
     },
 
     onAfterShow(){
@@ -49,19 +91,18 @@ const LeadEditView = customization.extend(EditView, {
 	},
 
     cleanName: function(){
-
+    	self=this;
         //Recupera variables
         var original_name = this.model.get("name_c");
-        // console.log("CleanName "+original_name);
-        var list_check = app.lang.getAppListStrings('validacion_duplicados_list');
-        var simbolos = app.lang.getAppListStrings('validacion_simbolos_list');
+        //var list_check = app.lang.getAppListStrings('validacion_duplicados_list');
+        //var simbolos = app.lang.getAppListStrings('validacion_simbolos_list');
         //Define arreglos para guardar nombre de lead
         var clean_name_split = [];
         var clean_name_split_full = [];
         clean_name_split = original_name.split(" ");
         //Elimina simbolos: Ej. . , -
         _.each(clean_name_split, function (value, key) {
-            _.each(simbolos, function (simbolo, index) {
+            _.each(self.simbolos, function (simbolo, index) {
                 var clean_value = value.split(simbolo).join('');
                 if (clean_value != value) {
                     clean_name_split[key] = clean_value;
@@ -74,7 +115,7 @@ const LeadEditView = customization.extend(EditView, {
             //Elimina tipos de sociedad: Ej. SA, de , CV...
             var totalVacio = 0;
             _.each(clean_name_split, function (value, key) {
-                _.each(list_check, function (index, nomenclatura) {
+                _.each(self.list_check, function (index, nomenclatura) {
                     var upper_value = value.toUpperCase();
                     if (upper_value == nomenclatura) {
                         var clean_value = upper_value.replace(nomenclatura, "");
