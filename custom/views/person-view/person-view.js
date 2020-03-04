@@ -93,6 +93,14 @@ const AccountEditView = customization.extend(EditView, {
         
     },
 
+    onAfterShow(){
+
+        //Se establece función para evitar 'bug' que hace que se muestre 'Teléfonos' en el placeholder
+        $('input').removeAttr('placeholder');
+        $('span.placeholder:contains("Teléfonos")').html("")
+
+    },
+
     setLengthCurrency:function(e){
         //Se establece longitud máxima para campos de moneda
         $(e.currentTarget).attr('maxlength','15');
