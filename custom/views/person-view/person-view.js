@@ -153,7 +153,12 @@ const AccountEditView = customization.extend(EditView, {
 
         //Se establece función para evitar 'bug' que hace que se muestre 'Teléfonos' en el placeholder
         $('input').removeAttr('placeholder');
-        $('span.placeholder:contains("Teléfonos")').html("")
+        $('span.placeholder:contains("Teléfonos")').html("");
+
+        if (App.user.attributes.deudor_factoraje_c != true) {
+            //Readonly check factoraje
+           $('.field__label:contains("Deudor Factoraje")').parent().find('input').eq(0).attr('style','pointer-events:none');
+        }
 
     },
 
