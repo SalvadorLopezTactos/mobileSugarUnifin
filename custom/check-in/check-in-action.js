@@ -92,6 +92,7 @@ customization.registerRecordAction({
                 check_in_time_c: (new Date()).toISOString(),
                 check_in_latitude_c:  position.coords.latitude,
                 check_in_longitude_c: position.coords.longitude,
+                status:'Held'
             }, { silent: true });
             
             // Perform reverse geocoding: get physical address from coordinates
