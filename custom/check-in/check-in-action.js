@@ -15,8 +15,22 @@ customization.registerRecordAction({
     
     stateHandlers: {
         isVisible(view, model) {
-            // Do not display the action if already checked in
-            return _.isEmpty(model.get('check_in_time_c'));
+            var fechaActual = new Date(); //obtiene fecha actual
+            var fechainicio = new Date(model.get("date_start"));
+            var d = fechainicio.getDate();
+            var m = fechainicio.getMonth() + 1;
+            var y = fechainicio.getFullYear();
+            var fechafin= new Date(y,m-1,d+1, 2,0); //Fecha final
+            var puestoUser=App.user.get('tipodeproducto_c');
+
+            if (puestoUser=='8' && model.get('assigned_user_id')==app.user.attributes.id && (model.get('check_in_time_c')=='' || model.get('check_in_time_c')==null || _.isEmpty(model.get('check_in_time_c')))
+            && fechaActual>fechainicio && fechaActual<fechafin && model.get('status')=='Planned'){
+
+                return true;
+
+            }else{
+                return false;
+            }
         },
     },
     
