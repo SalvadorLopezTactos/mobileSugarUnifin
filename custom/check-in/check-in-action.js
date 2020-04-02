@@ -21,9 +21,8 @@ customization.registerRecordAction({
             var m = fechainicio.getMonth() + 1;
             var y = fechainicio.getFullYear();
             var fechafin= new Date(y,m-1,d+1, 2,0); //Fecha final
-            var puestoUser=App.user.get('tipodeproducto_c');
 
-            if (puestoUser=='8' && model.get('assigned_user_id')==app.user.attributes.id && (model.get('check_in_time_c')=='' || model.get('check_in_time_c')==null || _.isEmpty(model.get('check_in_time_c')))
+            if (model.get('assigned_user_id')==app.user.attributes.id && (model.get('check_in_time_c')=='' || model.get('check_in_time_c')==null || _.isEmpty(model.get('check_in_time_c')))
             && fechaActual>fechainicio && fechaActual<fechafin && model.get('status')=='Planned'){
 
                 return true;
@@ -46,11 +45,17 @@ customization.registerRecordAction({
         });
         
         let updateModel = (address) => {
-            model.save({
-                check_in_address_c: address,
+            if(address==undefined){
+                model.save();
+
+            }else{
+
+                model.save({
+                check_in_address_c: address
             }, {
                 // Pass a list of fields to be sent to the server
                 fields: [
+                    'status',
                     'check_in_latitude_c',
                     'check_in_longitude_c',
                     'check_in_time_c',
@@ -61,6 +66,9 @@ customization.registerRecordAction({
                     app.alert.dismiss('check_in');
                 }
             });
+
+            }
+
             
         };
         
@@ -87,15 +95,31 @@ customization.registerRecordAction({
         // Called when the current location is obtained
         let locationObtained = position => {
             app.logger.debug(`Latitude: ${position.coords.latitude}, longitude: ${position.coords.longitude}`);
-            
-            model.set({
-                check_in_time_c: (new Date()).toISOString(),
-                check_in_latitude_c:  position.coords.latitude,
-                check_in_longitude_c: position.coords.longitude,
-                status:'Held'
-            }, { silent: true });
+            //Obteniendo producto de usuario logueado
+            var productoUser=App.user.get('tipodeproducto_c');
+
+            if(productoUser=='8' ){
+
+                model.set({
+                    check_in_time_c: (new Date()).toISOString(),
+                    check_in_latitude_c:  position.coords.latitude,
+                    check_in_longitude_c: position.coords.longitude,
+                    status: "Held"
+                });
+            }else{
+                model.set({
+                    check_in_time_c: (new Date()).toISOString(),
+                    check_in_latitude_c:  position.coords.latitude,
+                    check_in_longitude_c: position.coords.longitude
+                });
+
+            }
+
+            //model.save();
+            //app.alert.dismiss('check_in');
             
             // Perform reverse geocoding: get physical address from coordinates
+            
             geolocation.getGeoPlacemarks({
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
@@ -103,9 +127,10 @@ customization.registerRecordAction({
                 successCb: placemarksObtained,
                 errorCb: (errCode, errMessage) => {
                     app.logger.debug(`Placemark info is not available: ${errCode} - ${errMessage}`);
-                    updateModel();
+                    updateModel('');
                 },
             });
+            
             
         };
 
