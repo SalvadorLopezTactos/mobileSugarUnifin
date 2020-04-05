@@ -1,0 +1,31 @@
+<div class="field field--bool">
+    <label class="field__label">{{label}}</label>
+    <div class="field__controls">
+    	<input class="checkbox_default" type="checkbox" id="checkbox_no_viable">
+    </div>
+</div>
+	<div class="field field--enum hide noViable">
+    	<label class="field__label">Razón de Lead no viable</label>
+    	<div class="field__controls">
+        	<select name="enum" id="razon_nv_leasing">
+	        	{{#each razones_ddw_list}}
+	        		<option value="{{@key}}">{{this}}</option>
+	            {{/each}}
+	        </select>
+       	 	<i class="icondefault icon icon-caret-down selectArrow-icon"></i>
+       	 </div>
+    </div>
+
+    <!-- Fuera de Perfil (Razón)-->
+    <div class="field field--enum hide noViable">
+    	<label class="field__label">Fuera de Perfil (Razón)</label>
+    	<div class="field__controls">
+        	<select name="enum" id="fuera_perfil_razon">
+	        	{{#each fuera_de_perfil_ddw_list}}
+	        		<option value="{{@key}}">{{this}}</option>
+	            {{/each}}
+	        </select>
+       	 	<i class="icondefault icon icon-caret-down selectArrow-icon"></i>
+       	 </div>
+    </div>
+    <!--fin Fuera de Perfil (Razón)-->  
