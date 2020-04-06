@@ -32,7 +32,6 @@ const NoViableField = customization.extend(TextField, {
             });
         app.api.call('GET', app.api.buildURL('GetDropdownList/razones_ddw_list,fuera_de_perfil_ddw_list,no_producto_requiere_list,razones_cf_list,tct_razon_ni_l_ddw_c_list'), null, {
                 success: _.bind(function (data) {
-                    app.alert.dismiss('getlists');
                     if (data) {
                         selfListas.razones_ddw_list=data['razones_ddw_list'];
                         selfListas.fuera_de_perfil_ddw_list = data['fuera_de_perfil_ddw_list'];
@@ -40,6 +39,7 @@ const NoViableField = customization.extend(TextField, {
                         selfListas.razones_cf_list = data['razones_cf_list'];
                         selfListas.tct_razon_ni_l_ddw_c_list =data['tct_razon_ni_l_ddw_c_list']; 
                     }
+                    app.alert.dismiss('getlists');
                 }, self),
             });
 
@@ -107,7 +107,41 @@ const NoViableField = customization.extend(TextField, {
             this.vista='none';
         }
 
-    }
+    },
+
+    onAfterRender(){
+        //Obtener la info de cada usuario por producto para saber si se permite la edición al respectivo campo No viable
+        var id_current_user=App.user.get('id');
+        //Leasing
+        if(id_current_user!=this.context.get('model').attributes.user_id_c){
+            //Bloquear sección No viable Leasing
+            $('#leasing').attr('style','pointer-events:none');
+        }
+
+        //Factoraje
+        if(id_current_user!=this.context.get('model').attributes.user_id1_c){
+            //Bloquear sección No viable Leasing
+            $('#factoraje').attr('style','pointer-events:none');
+        }
+
+        //Crédito Automotriz
+        if(id_current_user!=this.context.get('model').attributes.user_id2_c){
+            //Bloquear sección No viable Leasing
+            $('#credito').attr('style','pointer-events:none');
+        }
+
+        //Fleet
+        if(id_current_user!=this.context.get('model').attributes.user_id6_c){
+            //Bloquear sección No viable Leasing
+            $('#fleet').attr('style','pointer-events:none');
+        }
+
+        //Uniclick
+        if(id_current_user!=this.context.get('model').attributes.user_id7_c){
+            //Bloquear sección No viable Leasing
+            $('#uniclick').attr('style','pointer-events:none');
+        }
+    },
    
 });
 
