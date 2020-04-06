@@ -6,7 +6,15 @@ const NoViableField = customization.extend(TextField, {
 
     events: {
         'change #checkbox_no_viable': 'muestraRazonNoViable',
-        'change #razon_nv_leasing': 'showFueraPerfil',
+        'change #checkbox_no_viable_factoraje': 'muestraRazonNoViable',
+        'change #checkbox_no_viable_credito': 'muestraRazonNoViable',
+        'change #checkbox_no_viable_fleet': 'muestraRazonNoViable',
+        'change #checkbox_no_viable_uniclick': 'muestraRazonNoViable',
+        'change #razon_nv_leasing': 'showRazonDependiente',
+        'change #razon_nv_factoraje': 'showRazonDependiente',
+        'change #razon_nv_credito': 'showRazonDependiente',
+        'change #razon_nv_fleet': 'showRazonDependiente',
+        'change #razon_nv_uniclick': 'showRazonDependiente',
     },
 
     initialize(options) {
@@ -38,31 +46,67 @@ const NoViableField = customization.extend(TextField, {
     },
 
     muestraRazonNoViable(e){
-        var valor=$('#checkbox_no_viable:checked').val();
-        if(valor=='on'){
-            $('#razon_nv_leasing').parent().parent().removeClass('hide');
+        //var valor=$('#checkbox_no_viable:checked').val();
+        var valor=e.currentTarget.checked;
+        if(valor){
+            //$('#razon_nv_leasing').parent().parent().removeClass('hide');
+            $(e.currentTarget).parent().parent().next().removeClass('hide');
+
         }else{
-            //$('#razon_nv_leasing').parent().parent().addClass('hide');
-            $('.noViable').addClass('hide');
             //Se ocultan todos los campos dependientes pertenecientes a la clase noViable
-            //$('.noViable').hide();
+            //En caso de desactivar el check "No viable", únicamente se ocultan campos 'hijos' del respectivo producto
+            $(e.currentTarget).parent().parent().parent().children('.noViable').addClass('hide');
         }
 
     },
 
-    showFueraPerfil(e){
+    showRazonDependiente(e){
         var valor=$(e.currentTarget).val();
-        if(valor=='1'){
-            $('#fuera_perfil_razon').parent().parent().removeClass('hide');
+        if(valor=='1'){//Fuera de Perfil
+            $(e.currentTarget).parent().parent().next().removeClass('hide');
+
         }else{
-            $('#fuera_perfil_razon').parent().parent().addClass('hide');
+            $(e.currentTarget).parent().parent().next().addClass('hide');
+        }
+
+        if(valor=='2'){//Condiciones financieras
+            $(e.currentTarget).parent().parent().parent().children('.condicionesFinancieras').removeClass('hide');
+
+        }else{
+            $(e.currentTarget).parent().parent().parent().children('.condicionesFinancieras').addClass('hide');
+        }
+
+        if(valor=='3'){//Ya está con la competencia
+            $(e.currentTarget).parent().parent().parent().children('.competencia_quien').removeClass('hide');
+            $(e.currentTarget).parent().parent().parent().children('.competencia_porque').removeClass('hide');
+        }else{
+
+            $(e.currentTarget).parent().parent().parent().children('.competencia_quien').addClass('hide');
+            $(e.currentTarget).parent().parent().parent().children('.competencia_porque').addClass('hide');
+        }
+
+        if(valor=='4'){//No tenemos el producto que requiere
+            $(e.currentTarget).parent().parent().parent().children('.que_producto').removeClass('hide');
+        }else{
+            $(e.currentTarget).parent().parent().parent().children('.que_producto').addClass('hide');
+        }
+
+        if(valor=='7'){//No se encuentra interesado
+            $(e.currentTarget).parent().parent().parent().children('.no_interesado').removeClass('hide');
+        }else{
+            $(e.currentTarget).parent().parent().parent().children('.no_interesado').addClass('hide');
         }
 
     },
 
     onBeforeRender(){
-        //this.razones_ddw_list={'1':'UNO','2':'DOS'};
-        //this.razones_ddw_list = app.lang.getAppListStrings('razones_ddw_list');
+        //Condición para saber si se debe mostrar el campo de No viable
+        if(this.model.get('tipo_registro_c')=='Lead' && !this.context.get('create')){
+            this.vista='block';
+        }else{
+            this.vista='none';
+        }
+
     }
    
 });
