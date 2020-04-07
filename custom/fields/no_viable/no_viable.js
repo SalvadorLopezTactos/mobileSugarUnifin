@@ -1,7 +1,7 @@
 const app = SUGAR.App;
 const customization = require('%app.core%/customization.js');
 const TextField = require('%app.fields%/text-field');
-// Declare 'signature' type field.
+const dialog = require('%app.core%/dialog');
 const NoViableField = customization.extend(TextField, {
 
     events: {
@@ -21,6 +21,8 @@ const NoViableField = customization.extend(TextField, {
 
         this._super(options);
         this.getListValuesNoViable();
+
+        this.model.addValidationTask('validateCamposNoViable', _.bind(this.validateCamposNoViable, this));
     },
 
     getListValuesNoViable(){
@@ -43,6 +45,129 @@ const NoViableField = customization.extend(TextField, {
                 }, self),
             });
 
+    },
+
+    validateCamposNoViable(fields, errors, callback){
+        //Validación por producto
+        var faltantesLeasing = 0;
+        var faltantesFactoraje = 0;
+        var faltantesCredito = 0;
+        var faltantesFleet = 0;
+        var faltantesUniclick=0;
+
+        var mensajeLeasing='';
+        var mensajeFactoraje='';
+        var mensajeCredito='';
+        var mensajeFleet='';
+        var mensajeUniclick='';
+
+        var valorLeasing=$('#checkbox_no_viable').attr('checked');
+        var valorFactoraje=$('#checkbox_no_viable_factoraje').attr('checked');
+        var valorCredito=$('#checkbox_no_viable_credito').attr('checked');
+        var valorFleet=$('#checkbox_no_viable_factoraje').attr('checked');
+        var valorUniclick=$('#checkbox_no_viable_uniclick').attr('checked');
+
+        if(valorLeasing){
+            var response=this.validaReqPorProducto('leasing');
+            mensajeLeasing=response[0];
+            faltantesLeasing=response[1];
+        }
+
+        if(valorFactoraje){
+            var responseFactoraje=this.validaReqPorProducto('factoraje');
+            mensajeFactoraje=responseFactoraje[0];
+            faltantesFactoraje=responseFactoraje[1];
+        }
+
+        if(valorCredito){
+            var responseCredito=this.validaReqPorProducto('credito');
+            mensajeCredito=responseCredito[0];
+            faltantesCredito=responseCredito[1];
+        }
+
+        if(valorFleet){
+            var responseFleet=this.validaReqPorProducto('fleet');
+            mensajeFleet=responseFleet[0];
+            faltantesFleet=responseFleet[1];
+        }
+
+        if(valorUniclick){
+            var responseUniclick=this.validaReqPorProducto('uniclick');
+            mensajeUniclick=responseUniclick[0];
+            faltantesUniclick=responseUniclick[1];
+        }
+
+        var faltantes=faltantesLeasing+faltantesFactoraje+faltantesCredito+faltantesFleet+faltantesUniclick;
+
+        if (faltantes > 0) {
+            dialog.showAlert(mensajeLeasing+mensajeFactoraje+mensajeCredito+mensajeFleet+mensajeUniclick);
+
+            errors['error_no_viable'] = errors['error_no_viable'] || {};
+            errors['error_no_viable'].required = true;
+        }
+
+        callback(null, fields, errors);
+
+    },
+
+    /*
+    * @param String producto Tipo de producto
+    * @return Array response Arreglo en donde la primera posición contiene el mensaje y la segunda el número de campos faltantes
+    */
+    validaReqPorProducto(producto){
+
+        var mensaje='\nNo viable '+producto+': Hace falta llenar los siguientes campos:\n';
+        var faltantes = 0;
+
+        if($('#razon_nv_'+producto).is(":visible") && ($('#razon_nv_'+producto).val()=="" || $('#razon_nv_'+producto).val()=="0" )){
+            $('#razon_nv_'+producto).parent().parent().addClass('error');
+            mensaje+='Raz\u00F3n de Lead no viable\n';
+            faltantes+=1;
+        }
+
+            //Fuera de Perfil
+        if($('#fuera_perfil_razon_'+producto).is(":visible") && ($('#fuera_perfil_razon_'+producto).val()=="" || $('#fuera_perfil_razon_'+producto).val()=="0" )){
+            $('#fuera_perfil_razon_'+producto).parent().parent().addClass('error');
+            mensaje+='Fuera de Perfil (Raz\u00F3n)\n';
+            faltantes+=1;
+        }
+
+        //Condiciones financieras
+        if($('#cond_financieras_'+producto).is(":visible") && ($('#cond_financieras_'+producto).val()=="" || $('#cond_financieras_'+producto).val()=="0" )){
+            $('#cond_financieras_'+producto).parent().parent().addClass('error');
+            mensaje+='Condiciones Financieras\n';
+            faltantes+=1;
+        }
+
+        //Quién
+        if($('#competencia_quien_'+producto).is(":visible") && $('#competencia_quien_'+producto).val().trim()==""){
+            $('#competencia_quien_'+producto).parent().parent().parent().addClass('error');
+            mensaje+='¿Qui\u00E9n?\n';
+            faltantes+=1;
+        }
+
+        //Por qué
+        if($('#competencia_porque_'+producto).is(":visible") && $('#competencia_porque_'+producto).val().trim()==""){
+            $('#competencia_porque_'+producto).parent().parent().parent().addClass('error');
+            mensaje+='¿Por qu\u00E9?\n';
+            faltantes+=1;
+        }
+
+            //Qué producto
+        if($('#que_producto_'+producto).is(":visible") && ($('#que_producto_'+producto).val()=="" || $('#que_producto_'+producto).val()=="0" )){
+            $('#que_producto_'+producto).parent().parent().addClass('error');
+            mensaje+='¿Qu\u00E9 producto?\n';
+            faltantes+=1;
+        }
+
+            //Razón No se encuentra interesado
+        if($('#no_interesado_'+producto).is(":visible") && ($('#no_interesado_'+producto).val()=="" || $('#no_interesado_'+producto).val()=="0" )){
+            $('#no_interesado_'+producto).parent().parent().addClass('error');
+            mensaje+='No se encuentra interesado\n';
+            faltantes+=1;
+        }
+
+        return [mensaje,faltantes];
     },
 
     muestraRazonNoViable(e){
