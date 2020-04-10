@@ -20,7 +20,14 @@ const NoViableField = customization.extend(TextField, {
     initialize(options) {
 
         this._super(options);
+        this.successFlag=0;
         this.getListValuesNoViable();
+
+        if(!this.context.get('create')){
+            this.getProductsInfo();
+        }
+        //Inicializando arreglo de productos vacío
+        this.initializeProducts();
 
         this.model.addValidationTask('validateCamposNoViable', _.bind(this.validateCamposNoViable, this));
     },
@@ -45,6 +52,150 @@ const NoViableField = customization.extend(TextField, {
                 }, self),
             });
 
+    },
+
+    initializeProducts(){
+
+        this.productos={
+            'leasing':{
+                'no_viable':'',
+                'razon_nv':'',
+                'fuera_perfil_razon':'',
+                'condicionesFinancieras':'',
+                'competencia_quien':'',
+                'competencia_porque':'',
+                'que_producto':'',
+                'razon_no_interesado':''
+            },
+            'factoring':{
+                'no_viable':'',
+                'razon_nv':'',
+                'fuera_perfil_razon':'',
+                'condicionesFinancieras':'',
+                'competencia_quien':'',
+                'competencia_porque':'',
+                'que_producto':'',
+                'razon_no_interesado':''
+            },
+            'credito':{
+                'no_viable':'',
+                'razon_nv':'',
+                'fuera_perfil_razon':'',
+                'condicionesFinancieras':'',
+                'competencia_quien':'',
+                'competencia_porque':'',
+                'que_producto':'',
+                'razon_no_interesado':''
+            },
+            'fleet':{
+                'no_viable':'',
+                'razon_nv':'',
+                'fuera_perfil_razon':'',
+                'condicionesFinancieras':'',
+                'competencia_quien':'',
+                'competencia_porque':'',
+                'que_producto':'',
+                'razon_no_interesado':''
+            },
+            'uniclick':{
+                'no_viable':'',
+                'razon_nv':'',
+                'fuera_perfil_razon':'',
+                'condicionesFinancieras':'',
+                'competencia_quien':'',
+                'competencia_porque':'',
+                'que_producto':'',
+                'razon_no_interesado':''
+            }
+        }
+
+    },
+
+    getProductsInfo(){
+        selfProducts=this;
+        app.alert.show('getInfoProducts', {
+                level: 'process',
+                messages: 'Cargando...'
+            });
+        app.api.call('GET', app.api.buildURL('Accounts/'+this.model.get("id")+'/link/accounts_uni_productos_1'), null, {
+                success: _.bind(function (data) {
+                    if (data) {
+                        if(data.records.length>0){
+
+                            for(var i=0;i<data.records.length;i++){
+                                //Producto Leasing
+                                if(data.records[i].tipo_producto=='1'){
+                                    selfProducts.productos.leasing.no_viable=data.records[i].no_viable;
+                                    selfProducts.productos.leasing.razon_nv=data.records[i].no_viable_razon;
+                                    selfProducts.productos.leasing.fuera_perfil_razon=data.records[i].no_viable_razon_fp;
+                                    selfProducts.productos.leasing.condicionesFinancieras=data.records[i].no_viable_razon_cf;
+                                    selfProducts.productos.leasing.competencia_quien=data.records[i].no_viable_quien;
+                                    selfProducts.productos.leasing.competencia_porque=data.records[i].no_viable_porque;
+                                    selfProducts.productos.leasing.que_producto=data.records[i].no_viable_producto;
+                                    selfProducts.productos.leasing.razon_no_interesado=data.records[i].no_viable_razon_ni;
+                                }
+                                //Producto Factoring
+                                if(data.records[i].tipo_producto=='4'){
+                                    selfProducts.productos.factoring.no_viable=data.records[i].no_viable;
+                                    selfProducts.productos.factoring.razon_nv=data.records[i].no_viable_razon;
+                                    selfProducts.productos.factoring.fuera_perfil_razon=data.records[i].no_viable_razon_fp;
+                                    selfProducts.productos.factoring.condicionesFinancieras=data.records[i].no_viable_razon_cf;
+                                    selfProducts.productos.factoring.competencia_quien=data.records[i].no_viable_quien;
+                                    selfProducts.productos.factoring.competencia_porque=data.records[i].no_viable_porque;
+                                    selfProducts.productos.factoring.que_producto=data.records[i].no_viable_producto;
+                                    selfProducts.productos.factoring.razon_no_interesado=data.records[i].no_viable_razon_ni;
+
+                                }
+                                //Producto Crédito Automotriz
+                                if(data.records[i].tipo_producto=='3'){
+                                    selfProducts.productos.credito.no_viable=data.records[i].no_viable;
+                                    selfProducts.productos.credito.razon_nv=data.records[i].no_viable_razon;
+                                    selfProducts.productos.credito.fuera_perfil_razon=data.records[i].no_viable_razon_fp;
+                                    selfProducts.productos.credito.condicionesFinancieras=data.records[i].no_viable_razon_cf;
+                                    selfProducts.productos.credito.competencia_quien=data.records[i].no_viable_quien;
+                                    selfProducts.productos.credito.competencia_porque=data.records[i].no_viable_porque;
+                                    selfProducts.productos.credito.que_producto=data.records[i].no_viable_producto;
+                                    selfProducts.productos.credito.razon_no_interesado=data.records[i].no_viable_razon_ni;
+
+                                }
+                                //Producto Fleet
+                                if(data.records[i].tipo_producto=='6'){
+                                    selfProducts.productos.fleet.no_viable=data.records[i].no_viable;
+                                    selfProducts.productos.fleet.razon_nv=data.records[i].no_viable_razon;
+                                    selfProducts.productos.fleet.fuera_perfil_razon=data.records[i].no_viable_razon_fp;
+                                    selfProducts.productos.fleet.condicionesFinancieras=data.records[i].no_viable_razon_cf;
+                                    selfProducts.productos.fleet.competencia_quien=data.records[i].no_viable_quien;
+                                    selfProducts.productos.fleet.competencia_porque=data.records[i].no_viable_porque;
+                                    selfProducts.productos.fleet.que_producto=data.records[i].no_viable_producto;
+                                    selfProducts.productos.fleet.razon_no_interesado=data.records[i].no_viable_razon_ni;
+
+                                }
+                                //Producto Uniclick
+                                if(data.records[i].tipo_producto=='8'){
+                                    selfProducts.productos.uniclick.no_viable=data.records[i].no_viable;
+                                    selfProducts.productos.uniclick.razon_nv=data.records[i].no_viable_razon;
+                                    selfProducts.productos.uniclick.fuera_perfil_razon=data.records[i].no_viable_razon_fp;
+                                    selfProducts.productos.uniclick.condicionesFinancieras=data.records[i].no_viable_razon_cf;
+                                    selfProducts.productos.uniclick.competencia_quien=data.records[i].no_viable_quien;
+                                    selfProducts.productos.uniclick.competencia_porque=data.records[i].no_viable_porque;
+                                    selfProducts.productos.uniclick.que_producto=data.records[i].no_viable_producto;
+                                    selfProducts.productos.uniclick.razon_no_interesado=data.records[i].no_viable_razon_ni;
+
+                                }
+                            }
+
+                            selfProducts.successFlag=1;
+
+                            selfProducts.render();
+
+                        }
+                    }
+                }, selfProducts),
+                
+                complete: () => {
+                        app.alert.dismiss('getInfoProducts');
+                    },
+            });
     },
 
     validateCamposNoViable(fields, errors, callback){
@@ -265,6 +416,59 @@ const NoViableField = customization.extend(TextField, {
         if(id_current_user!=this.context.get('model').attributes.user_id7_c){
             //Bloquear sección No viable Leasing
             $('#uniclick').attr('style','pointer-events:none');
+        }
+
+        if(this.successFlag==1){
+            //Se establecen valores de cada campo select con jquery ya que se debe de establecer un helper hbs para mobile
+            //similar a la definición web custom/JavaScript/selectedOption-handlebar-helpers.js
+            //Campos Leasing
+            $('#razon_nv_leasing').val(this.productos.leasing.razon_nv);
+            $('#fuera_perfil_razon_leasing').val(this.productos.leasing.fuera_perfil_razon);
+            $('#cond_financieras_leasing').val(this.productos.leasing.condicionesFinancieras);
+            $('#que_producto_leasing').val(this.productos.leasing.que_producto);
+            $('#no_interesado_leasing').val(this.productos.leasing.razon_no_interesado);
+
+            //Campos Factoraje
+            $('#razon_nv_factoraje').val(this.productos.factoring.razon_nv);
+            $('#fuera_perfil_razon_factoraje').val(this.productos.factoring.fuera_perfil_razon);
+            $('#cond_financieras_factoraje').val(this.productos.factoring.condicionesFinancieras);
+            $('#que_producto_factoraje').val(this.productos.factoring.que_producto);
+            $('#no_interesado_factoraje').val(this.productos.factoring.razon_no_interesado);
+
+            //Campos Crédito Automotriz
+            $('#razon_nv_credito').val(this.productos.credito.razon_nv);
+            $('#fuera_perfil_razon_credito').val(this.productos.credito.fuera_perfil_razon);
+            $('#cond_financieras_credito').val(this.productos.credito.condicionesFinancieras);
+            $('#que_producto_credito').val(this.productos.credito.que_producto);
+            $('#no_interesado_credito').val(this.productos.credito.razon_no_interesado);
+
+            //Campos Fleet
+            $('#razon_nv_fleet').val(this.productos.fleet.razon_nv);
+            $('#fuera_perfil_razon_fleet').val(this.productos.fleet.fuera_perfil_razon);
+            $('#cond_financieras_fleet').val(this.productos.fleet.condicionesFinancieras);
+            $('#que_producto_fleet').val(this.productos.fleet.que_producto);
+            $('#no_interesado_fleet').val(this.productos.fleet.razon_no_interesado);
+
+            //Campos Uniclick
+            $('#razon_nv_uniclick').val(this.productos.uniclick.razon_nv);
+            $('#fuera_perfil_razon_uniclick').val(this.productos.uniclick.fuera_perfil_razon);
+            $('#cond_financieras_uniclick').val(this.productos.uniclick.condicionesFinancieras);
+            $('#que_producto_uniclick').val(this.productos.uniclick.que_producto);
+            $('#no_interesado_uniclick').val(this.productos.uniclick.razon_no_interesado);
+
+            //Se disparan manualmente los eventos change de cada campo check para mostrar campos dependientes
+            $('#checkbox_no_viable').trigger('change');
+            $('#checkbox_no_viable_factoraje').trigger('change');
+            $('#checkbox_no_viable_credito').trigger('change');
+            $('#checkbox_no_viable_fleet').trigger('change');
+            $('#checkbox_no_viable_uniclick').trigger('change');
+
+            $('#razon_nv_leasing').trigger('change');
+            $('#razon_nv_factoraje').trigger('change');
+            $('#razon_nv_credito').trigger('change');
+            $('#razon_nv_fleet').trigger('change');
+            $('#razon_nv_uniclick').trigger('change');
+
         }
     },
    

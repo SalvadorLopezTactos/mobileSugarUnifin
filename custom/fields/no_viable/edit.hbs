@@ -7,7 +7,7 @@
 	<div class="field field--bool">
 		<label class="field__label">No viable Leasing</label>
 		<div class="field__controls">
-			<input class="checkbox_default" type="checkbox" id="checkbox_no_viable">
+			<input class="checkbox_default" type="checkbox" id="checkbox_no_viable" {{#if productos.leasing.no_viable}}checked{{/if}}>
 		</div>
 	</div>
 	<div class="field field--enum hide noViable">
@@ -55,7 +55,7 @@
 		<label class="field__label">¿Quién?</label>
 		<div class="field__controls">
 			<span class="input-wrapper">
-				<input type="text"  autocorrect="off" value="" id="competencia_quien_leasing">
+				<input type="text"  autocorrect="off" value="{{productos.leasing.competencia_quien}}" id="competencia_quien_leasing">
 				<i class="icondefault icon icon-remove clear-button"></i>
 			</span>
 		</div>
@@ -66,7 +66,7 @@
 		<label class="field__label">¿Por qué?</label>
 		<div class="field__controls">
 			<span class="input-wrapper">
-				<input type="text"  autocorrect="off" value="" id="competencia_porque_leasing">
+				<input type="text"  autocorrect="off" value="{{productos.leasing.competencia_porque}}" id="competencia_porque_leasing">
 				<i class="icondefault icon icon-remove clear-button"></i>
 			</span>
 		</div>
@@ -109,7 +109,7 @@
 	<div class="field field--bool">
 		<label class="field__label">No viable Factoraje</label>
 		<div class="field__controls">
-			<input class="checkbox_default" type="checkbox" id="checkbox_no_viable_factoraje">
+			<input class="checkbox_default" type="checkbox" id="checkbox_no_viable_factoraje" {{#if productos.factoring.no_viable}}checked{{/if}}>
 		</div>
 	</div>
 	<div class="field field--enum hide noViable">
@@ -157,7 +157,7 @@
 		<label class="field__label">¿Quién?</label>
 		<div class="field__controls">
 			<span class="input-wrapper">
-				<input type="text"  autocorrect="off" value="" id="competencia_quien_factoraje">
+				<input type="text"  autocorrect="off" value="{{productos.factoring.competencia_quien}}" id="competencia_quien_factoraje">
 				<i class="icondefault icon icon-remove clear-button"></i>
 			</span>
 		</div>
@@ -168,7 +168,7 @@
 		<label class="field__label">¿Por qué?</label>
 		<div class="field__controls">
 			<span class="input-wrapper">
-				<input type="text"  autocorrect="off" value="" id="competencia_porque_factoraje">
+				<input type="text"  autocorrect="off" value="{{productos.factoring.competencia_porque}}" id="competencia_porque_factoraje">
 				<i class="icondefault icon icon-remove clear-button"></i>
 			</span>
 		</div>
@@ -211,7 +211,7 @@
 	<div class="field field--bool">
 		<label class="field__label">No viable Crédito Automotriz</label>
 		<div class="field__controls">
-			<input class="checkbox_default" type="checkbox" id="checkbox_no_viable_credito">
+			<input class="checkbox_default" type="checkbox" id="checkbox_no_viable_credito" {{#if productos.credito.no_viable}}checked{{/if}}>
 		</div>
 	</div>
 	<div class="field field--enum hide noViable">
@@ -259,7 +259,7 @@
 		<label class="field__label">¿Quién?</label>
 		<div class="field__controls">
 			<span class="input-wrapper">
-				<input type="text"  autocorrect="off" value="" id="competencia_quien_credito">
+				<input type="text"  autocorrect="off" value="{{productos.credito.competencia_quien}}" id="competencia_quien_credito">
 				<i class="icondefault icon icon-remove clear-button"></i>
 			</span>
 		</div>
@@ -270,7 +270,7 @@
 		<label class="field__label">¿Por qué?</label>
 		<div class="field__controls">
 			<span class="input-wrapper">
-				<input type="text"  autocorrect="off" value="" id="competencia_porque_credito">
+				<input type="text"  autocorrect="off" value="{{productos.credito.competencia_porque}}" id="competencia_porque_credito">
 				<i class="icondefault icon icon-remove clear-button"></i>
 			</span>
 		</div>
@@ -313,7 +313,7 @@
 	<div class="field field--bool">
 		<label class="field__label">No viable Fleet</label>
 		<div class="field__controls">
-			<input class="checkbox_default" type="checkbox" id="checkbox_no_viable_fleet">
+			<input class="checkbox_default" type="checkbox" id="checkbox_no_viable_fleet" {{#if productos.fleet.no_viable}}checked{{/if}}>
 		</div>
 	</div>
 	<div class="field field--enum hide noViable">
@@ -361,7 +361,7 @@
 		<label class="field__label">¿Quién?</label>
 		<div class="field__controls">
 			<span class="input-wrapper">
-				<input type="text"  autocorrect="off" value="" id="competencia_quien_fleet">
+				<input type="text"  autocorrect="off" value="{{productos.fleet.competencia_quien}}" id="competencia_quien_fleet">
 				<i class="icondefault icon icon-remove clear-button"></i>
 			</span>
 		</div>
@@ -372,7 +372,7 @@
 		<label class="field__label">¿Por qué?</label>
 		<div class="field__controls">
 			<span class="input-wrapper">
-				<input type="text"  autocorrect="off" value="" id="competencia_porque_fleet">
+				<input type="text"  autocorrect="off" value="{{productos.fleet.competencia_porque}}" id="competencia_porque_fleet">
 				<i class="icondefault icon icon-remove clear-button"></i>
 			</span>
 		</div>
@@ -415,7 +415,7 @@
 	<div class="field field--bool">
 		<label class="field__label">No viable Uniclick</label>
 		<div class="field__controls">
-			<input class="checkbox_default" type="checkbox" id="checkbox_no_viable_uniclick">
+			<input class="checkbox_default" type="checkbox" id="checkbox_no_viable_uniclick" {{#if productos.uniclick.no_viable}}checked{{/if}}>
 		</div>
 	</div>
 	<div class="field field--enum hide noViable">
@@ -463,7 +463,7 @@
 		<label class="field__label">¿Quién?</label>
 		<div class="field__controls">
 			<span class="input-wrapper">
-				<input type="text"  autocorrect="off" value="" id="competencia_quien_uniclick">
+				<input type="text"  autocorrect="off" value="{{productos.uniclick.competencia_quien}}" id="competencia_quien_uniclick">
 				<i class="icondefault icon icon-remove clear-button"></i>
 			</span>
 		</div>
@@ -474,7 +474,7 @@
 		<label class="field__label">¿Por qué?</label>
 		<div class="field__controls">
 			<span class="input-wrapper">
-				<input type="text"  autocorrect="off" value="" id="competencia_porque_uniclick">
+				<input type="text"  autocorrect="off" value="{{productos.uniclick.competencia_quien}}" id="competencia_porque_uniclick">
 				<i class="icondefault icon icon-remove clear-button"></i>
 			</span>
 		</div>
