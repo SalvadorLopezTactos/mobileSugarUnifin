@@ -10,11 +10,19 @@ const NoViableField = customization.extend(TextField, {
         'change #checkbox_no_viable_credito': 'muestraRazonNoViable',
         'change #checkbox_no_viable_fleet': 'muestraRazonNoViable',
         'change #checkbox_no_viable_uniclick': 'muestraRazonNoViable',
+        
         'change #razon_nv_leasing': 'showRazonDependiente',
         'change #razon_nv_factoraje': 'showRazonDependiente',
         'change #razon_nv_credito': 'showRazonDependiente',
         'change #razon_nv_fleet': 'showRazonDependiente',
         'change #razon_nv_uniclick': 'showRazonDependiente',
+        
+        'change #que_producto_leasing': 'showEspecifiqueProducto',
+        'change #que_producto_factoraje': 'showEspecifiqueProducto',
+        'change #que_producto_credito': 'showEspecifiqueProducto',
+        'change #que_producto_fleet': 'showEspecifiqueProducto',
+        'change #que_producto_uniclick': 'showEspecifiqueProducto',
+
     },
 
     initialize(options) {
@@ -55,7 +63,6 @@ const NoViableField = customization.extend(TextField, {
     },
 
     initializeProducts(){
-
         this.productos={
             'leasing':{
                 'no_viable':'',
@@ -132,6 +139,7 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.productos.leasing.competencia_quien=data.records[i].no_viable_quien;
                                     selfProducts.productos.leasing.competencia_porque=data.records[i].no_viable_porque;
                                     selfProducts.productos.leasing.que_producto=data.records[i].no_viable_producto;
+                                    selfProducts.productos.leasing.especifique_producto=data.records[i].no_viable_producto;
                                     selfProducts.productos.leasing.razon_no_interesado=data.records[i].no_viable_razon_ni;
                                 }
                                 //Producto Factoring
@@ -143,6 +151,7 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.productos.factoring.competencia_quien=data.records[i].no_viable_quien;
                                     selfProducts.productos.factoring.competencia_porque=data.records[i].no_viable_porque;
                                     selfProducts.productos.factoring.que_producto=data.records[i].no_viable_producto;
+                                    selfProducts.productos.factoring.especifique_producto=data.records[i].no_viable_producto;
                                     selfProducts.productos.factoring.razon_no_interesado=data.records[i].no_viable_razon_ni;
 
                                 }
@@ -155,6 +164,7 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.productos.credito.competencia_quien=data.records[i].no_viable_quien;
                                     selfProducts.productos.credito.competencia_porque=data.records[i].no_viable_porque;
                                     selfProducts.productos.credito.que_producto=data.records[i].no_viable_producto;
+                                    selfProducts.productos.credito.especifique_producto=data.records[i].no_viable_producto;
                                     selfProducts.productos.credito.razon_no_interesado=data.records[i].no_viable_razon_ni;
 
                                 }
@@ -167,6 +177,7 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.productos.fleet.competencia_quien=data.records[i].no_viable_quien;
                                     selfProducts.productos.fleet.competencia_porque=data.records[i].no_viable_porque;
                                     selfProducts.productos.fleet.que_producto=data.records[i].no_viable_producto;
+                                    selfProducts.productos.fleet.especifique_producto=data.records[i].no_viable_producto;
                                     selfProducts.productos.fleet.razon_no_interesado=data.records[i].no_viable_razon_ni;
 
                                 }
@@ -179,6 +190,7 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.productos.uniclick.competencia_quien=data.records[i].no_viable_quien;
                                     selfProducts.productos.uniclick.competencia_porque=data.records[i].no_viable_porque;
                                     selfProducts.productos.uniclick.que_producto=data.records[i].no_viable_producto;
+                                    selfProducts.productos.uniclick.especifique_producto=data.records[i].no_viable_producto;
                                     selfProducts.productos.uniclick.razon_no_interesado=data.records[i].no_viable_razon_ni;
 
                                 }
@@ -375,6 +387,17 @@ const NoViableField = customization.extend(TextField, {
 
     },
 
+    showEspecifiqueProducto(e){
+
+        var valor=$(e.currentTarget).val();
+        if(valor=='4'){
+             $(e.currentTarget).parent().parent().next().removeClass('hide');
+        }else{
+            $(e.currentTarget).parent().parent().next().addClass('hide');
+        }
+
+    },
+
     onBeforeRender(){
         //Condición para saber si se debe mostrar el campo de No viable
         if(this.model.get('tipo_registro_c')=='Lead' && !this.context.get('create')){
@@ -463,11 +486,12 @@ const NoViableField = customization.extend(TextField, {
             $('#checkbox_no_viable_fleet').trigger('change');
             $('#checkbox_no_viable_uniclick').trigger('change');
 
-            $('#razon_nv_leasing').trigger('change');
-            $('#razon_nv_factoraje').trigger('change');
-            $('#razon_nv_credito').trigger('change');
-            $('#razon_nv_fleet').trigger('change');
-            $('#razon_nv_uniclick').trigger('change');
+            //Se dispara evento change para mostrar campo de "Especifique producto"
+            $('#que_producto_leasing').trigger('change');
+            $('#que_producto_factoraje').trigger('change');
+            $('#que_producto_credito').trigger('change');
+            $('#que_producto_fleet').trigger('change');
+            $('#que_producto_fleet').trigger('change');
 
         }
     },
