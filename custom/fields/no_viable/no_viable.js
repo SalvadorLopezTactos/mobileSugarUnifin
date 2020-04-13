@@ -33,11 +33,20 @@ const NoViableField = customization.extend(TextField, {
 
         if(!this.context.get('create')){
             this.getProductsInfo();
+            this.getTipoCuentaPorProducto();
         }
         //Inicializando arreglo de productos vacío
         this.initializeProducts();
+        this.initializeProductsForModel();
 
         this.model.addValidationTask('validateCamposNoViable', _.bind(this.validateCamposNoViable, this));
+        //Guarda los valores hacia el modulo UNI PRODUCTOS
+        if(!this.context.get('create')){
+
+            this.model.addValidationTask('GuardaUniProductos', _.bind(this.saveUniProductos, this));
+
+        }
+        
     },
 
     getListValuesNoViable(){
@@ -118,6 +127,104 @@ const NoViableField = customization.extend(TextField, {
 
     },
 
+    initializeProductsForModel(){
+
+        this.tipoProducto = {
+            'leasing': {
+                'id': '',
+                'no_viable': '',
+                'no_viable_razon': '',
+                'no_viable_razon_fp': '',
+                'no_viable_quien': '',
+                'no_viable_porque': '',
+                'no_viable_producto': '',
+                'no_viable_razon_cf': '',
+                'no_viable_otro_c': '',
+                'no_viable_razon_ni': '',
+                'assigned_user_id': ''
+            },
+            'factoring': {
+                'id': '',
+                'no_viable': '',
+                'no_viable_razon': '',
+                'no_viable_razon_fp': '',
+                'no_viable_quien': '',
+                'no_viable_porque': '',
+                'no_viable_producto': '',
+                'no_viable_razon_cf': '',
+                'no_viable_otro_c': '',
+                'no_viable_razon_ni': '',
+                'assigned_user_id': ''
+            },
+            'credito_auto': {
+                'id': '',
+                'no_viable': '',
+                'no_viable_razon': '',
+                'no_viable_razon_fp': '',
+                'no_viable_quien': '',
+                'no_viable_porque': '',
+                'no_viable_producto': '',
+                'no_viable_razon_cf': '',
+                'no_viable_otro_c': '',
+                'no_viable_razon_ni': '',
+                'assigned_user_id': ''
+            },
+            'fleet': {
+                'id': '',
+                'no_viable': '',
+                'no_viable_razon': '',
+                'no_viable_razon_fp': '',
+                'no_viable_quien': '',
+                'no_viable_porque': '',
+                'no_viable_producto': '',
+                'no_viable_razon_cf': '',
+                'no_viable_otro_c': '',
+                'no_viable_razon_ni': '',
+                'assigned_user_id': ''
+            },
+            'uniclick': {
+                'id': '',
+                'no_viable': '',
+                'no_viable_razon': '',
+                'no_viable_razon_fp': '',
+                'no_viable_quien': '',
+                'no_viable_porque': '',
+                'no_viable_producto': '',
+                'no_viable_razon_cf': '',
+                'no_viable_otro_c': '',
+                'no_viable_razon_ni': '',
+                'assigned_user_id': ''
+            }
+        };
+
+    },
+
+    getTipoCuentaPorProducto(){
+
+        selfTipos=this;
+        app.alert.show('getInfoTipos', {
+                level: 'process',
+                messages: 'Cargando...'
+        });
+
+        var idC = this.model.get('id');
+        var url = app.api.buildURL('tct02_Resumen/' + idC, null, null);
+        if(idC != "" && idC != undefined){
+
+            app.api.call('GET',url,null,{
+                success: _.bind(function (data) {
+                    selfTipos.tipos=data;
+                }),
+                complete: () => {
+                    app.alert.dismiss('getInfoTipos');
+                },
+
+            });
+
+        }
+
+    },
+
     getProductsInfo(){
         selfProducts=this;
         app.alert.show('getInfoProducts', {
@@ -141,6 +248,19 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.productos.leasing.que_producto=data.records[i].no_viable_producto;
                                     selfProducts.productos.leasing.especifique_producto=data.records[i].no_viable_producto;
                                     selfProducts.productos.leasing.razon_no_interesado=data.records[i].no_viable_razon_ni;
+
+                                    //Se establece arreglo que viaja en this.model.set
+                                    selfProducts.tipoProducto.leasing.id=data.records[i].id;
+                                    selfProducts.tipoProducto.leasing.no_viable=data.records[i].no_viable;
+                                    selfProducts.tipoProducto.leasing.no_viable_razon=data.records[i].no_viable_razon;
+                                    selfProducts.tipoProducto.leasing.no_viable_razon_fp=data.records[i].no_viable_razon_fp;
+                                    selfProducts.tipoProducto.leasing.no_viable_quien=data.records[i].no_viable_quien;
+                                    selfProducts.tipoProducto.leasing.no_viable_porque=data.records[i].no_viable_porque;
+                                    selfProducts.tipoProducto.leasing.no_viable_producto=data.records[i].no_viable_producto;
+                                    selfProducts.tipoProducto.leasing.no_viable_razon_cf=data.records[i].no_viable_razon_cf;
+                                    selfProducts.tipoProducto.leasing.no_viable_otro_c=data.records[i].no_viable_producto;
+                                    selfProducts.tipoProducto.leasing.no_viable_razon_ni=data.records[i].no_viable_razon_ni;
+                                    selfProducts.tipoProducto.leasing.assigned_user_id=data.records[i].assigned_user_id;
                                 }
                                 //Producto Factoring
                                 if(data.records[i].tipo_producto=='4'){
@@ -153,6 +273,19 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.productos.factoring.que_producto=data.records[i].no_viable_producto;
                                     selfProducts.productos.factoring.especifique_producto=data.records[i].no_viable_producto;
                                     selfProducts.productos.factoring.razon_no_interesado=data.records[i].no_viable_razon_ni;
+
+                                    //Se establece arreglo que viaja en this.model.set
+                                    selfProducts.tipoProducto.factoring.id=data.records[i].id;
+                                    selfProducts.tipoProducto.factoring.no_viable=data.records[i].no_viable;
+                                    selfProducts.tipoProducto.factoring.no_viable_razon=data.records[i].no_viable_razon;
+                                    selfProducts.tipoProducto.factoring.no_viable_razon_fp=data.records[i].no_viable_razon_fp;
+                                    selfProducts.tipoProducto.factoring.no_viable_quien=data.records[i].no_viable_quien;
+                                    selfProducts.tipoProducto.factoring.no_viable_porque=data.records[i].no_viable_porque;
+                                    selfProducts.tipoProducto.factoring.no_viable_producto=data.records[i].no_viable_producto;
+                                    selfProducts.tipoProducto.factoring.no_viable_razon_cf=data.records[i].no_viable_razon_cf;
+                                    selfProducts.tipoProducto.factoring.no_viable_otro_c=data.records[i].no_viable_producto;
+                                    selfProducts.tipoProducto.factoring.no_viable_razon_ni=data.records[i].no_viable_razon_ni;
+                                    selfProducts.tipoProducto.factoring.assigned_user_id=data.records[i].assigned_user_id;
 
                                 }
                                 //Producto Crédito Automotriz
@@ -167,6 +300,19 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.productos.credito.especifique_producto=data.records[i].no_viable_producto;
                                     selfProducts.productos.credito.razon_no_interesado=data.records[i].no_viable_razon_ni;
 
+                                    //Se establece arreglo que viaja en this.model.set
+                                    selfProducts.tipoProducto.credito_auto.id=data.records[i].id;
+                                    selfProducts.tipoProducto.credito_auto.no_viable=data.records[i].no_viable;
+                                    selfProducts.tipoProducto.credito_auto.no_viable_razon=data.records[i].no_viable_razon;
+                                    selfProducts.tipoProducto.credito_auto.no_viable_razon_fp=data.records[i].no_viable_razon_fp;
+                                    selfProducts.tipoProducto.credito_auto.no_viable_quien=data.records[i].no_viable_quien;
+                                    selfProducts.tipoProducto.credito_auto.no_viable_porque=data.records[i].no_viable_porque;
+                                    selfProducts.tipoProducto.credito_auto.no_viable_producto=data.records[i].no_viable_producto;
+                                    selfProducts.tipoProducto.credito_auto.no_viable_razon_cf=data.records[i].no_viable_razon_cf;
+                                    selfProducts.tipoProducto.credito_auto.no_viable_otro_c=data.records[i].no_viable_producto;
+                                    selfProducts.tipoProducto.credito_auto.no_viable_razon_ni=data.records[i].no_viable_razon_ni;
+                                    selfProducts.tipoProducto.credito_auto.assigned_user_id=data.records[i].assigned_user_id;
+
                                 }
                                 //Producto Fleet
                                 if(data.records[i].tipo_producto=='6'){
@@ -180,6 +326,19 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.productos.fleet.especifique_producto=data.records[i].no_viable_producto;
                                     selfProducts.productos.fleet.razon_no_interesado=data.records[i].no_viable_razon_ni;
 
+                                    //Se establece arreglo que viaja en this.model.set
+                                    selfProducts.tipoProducto.fleet.id=data.records[i].id;
+                                    selfProducts.tipoProducto.fleet.no_viable=data.records[i].no_viable;
+                                    selfProducts.tipoProducto.fleet.no_viable_razon=data.records[i].no_viable_razon;
+                                    selfProducts.tipoProducto.fleet.no_viable_razon_fp=data.records[i].no_viable_razon_fp;
+                                    selfProducts.tipoProducto.fleet.no_viable_quien=data.records[i].no_viable_quien;
+                                    selfProducts.tipoProducto.fleet.no_viable_porque=data.records[i].no_viable_porque;
+                                    selfProducts.tipoProducto.fleet.no_viable_producto=data.records[i].no_viable_producto;
+                                    selfProducts.tipoProducto.fleet.no_viable_razon_cf=data.records[i].no_viable_razon_cf;
+                                    selfProducts.tipoProducto.fleet.no_viable_otro_c=data.records[i].no_viable_producto;
+                                    selfProducts.tipoProducto.fleet.no_viable_razon_ni=data.records[i].no_viable_razon_ni;
+                                    selfProducts.tipoProducto.fleet.assigned_user_id=data.records[i].assigned_user_id;
+
                                 }
                                 //Producto Uniclick
                                 if(data.records[i].tipo_producto=='8'){
@@ -192,6 +351,19 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.productos.uniclick.que_producto=data.records[i].no_viable_producto;
                                     selfProducts.productos.uniclick.especifique_producto=data.records[i].no_viable_producto;
                                     selfProducts.productos.uniclick.razon_no_interesado=data.records[i].no_viable_razon_ni;
+
+                                    //Se establece arreglo que viaja en this.model.set
+                                    selfProducts.tipoProducto.uniclick.id=data.records[i].id;
+                                    selfProducts.tipoProducto.uniclick.no_viable=data.records[i].no_viable;
+                                    selfProducts.tipoProducto.uniclick.no_viable_razon=data.records[i].no_viable_razon;
+                                    selfProducts.tipoProducto.uniclick.no_viable_razon_fp=data.records[i].no_viable_razon_fp;
+                                    selfProducts.tipoProducto.uniclick.no_viable_quien=data.records[i].no_viable_quien;
+                                    selfProducts.tipoProducto.uniclick.no_viable_porque=data.records[i].no_viable_porque;
+                                    selfProducts.tipoProducto.uniclick.no_viable_producto=data.records[i].no_viable_producto;
+                                    selfProducts.tipoProducto.uniclick.no_viable_razon_cf=data.records[i].no_viable_razon_cf;
+                                    selfProducts.tipoProducto.uniclick.no_viable_otro_c=data.records[i].no_viable_producto;
+                                    selfProducts.tipoProducto.uniclick.no_viable_razon_ni=data.records[i].no_viable_razon_ni;
+                                    selfProducts.tipoProducto.uniclick.assigned_user_id=data.records[i].assigned_user_id;
 
                                 }
                             }
@@ -269,6 +441,115 @@ const NoViableField = customization.extend(TextField, {
             errors['error_no_viable'].required = true;
         }
 
+        callback(null, fields, errors);
+
+    },
+
+    saveUniProductos(fields, errors, callback){
+
+        if (this.model.get('id') != "" && this.model.get('id') != undefined && Object.entries(errors).length == 0) {
+            //Inicializando objeto de Leasing
+            if ($('#checkbox_no_viable').attr('checked')) {
+                var objLeasing = {
+                    'id': this.tipoProducto.leasing.id, //Id
+                    'no_viable': $('#checkbox_no_viable').attr('checked'),
+                    'no_viable_razon': $('#razon_nv_leasing').val(), //lista Razón de Lead no viable 
+                    'no_viable_razon_fp': $('#fuera_perfil_razon_leasing').val(), //lista Fuera de Perfil (Razón) 
+                    'no_viable_quien': $('#competencia_quien_leasing').val(), //texto ¿Quién? 
+                    'no_viable_porque': $('#competencia_porque_leasing').val(), //texto ¿Por qué? 
+                    'no_viable_producto': $('#que_producto_leasing').val(), //lista ¿Qué producto? 
+                    'no_viable_razon_cf': $('#cond_financieras_leasing').val(), //lista Condiciones Financieras 
+                    'no_viable_otro_c': $('#especifique_producto_leasing').val(), //texto ¿Qué producto? 
+                    'no_viable_razon_ni': $('#no_interesado_leasing').val(), //lista Razón No se encuentra interesado 
+                    'assigned_user_id': this.tipoProducto.leasing.assigned_user_id // Asigna a usuario '9 - No Viable' en Uni_Productos
+                };
+
+                this.tipoProducto.leasing = objLeasing;
+            }
+
+            //Inicializando objeto de Factoraje
+            if ($('#checkbox_no_viable_factoraje').attr('checked')) {
+                var objFactoring = {
+                    'id': this.tipoProducto.factoring.id, //Id
+                    'no_viable': $('#checkbox_no_viable_factoraje').attr('checked'),
+                    'no_viable_razon': $('#razon_nv_factoraje').val(), //lista Razón de Lead no viable 
+                    'no_viable_razon_fp': $('#fuera_perfil_razon_factoraje').val(), //lista Fuera de Perfil (Razón) 
+                    'no_viable_quien': $('#competencia_quien_factoraje').val(), //texto ¿Quién? 
+                    'no_viable_porque': $('#competencia_porque_factoraje').val(), //texto ¿Por qué? 
+                    'no_viable_producto': $('#que_producto_factoraje').val(), //lista ¿Qué producto? 
+                    'no_viable_razon_cf': $('#cond_financieras_factoraje').val(), //lista Condiciones Financieras
+                    'no_viable_otro_c': $('#especifique_producto_factoraje').val(), //texto ¿Qué producto?
+                    'no_viable_razon_ni': $('#no_interesado_factoraje').val(), //lista Razón No se encuentra interesado
+                    'assigned_user_id': this.tipoProducto.factoring.assigned_user_id // Asigna a usuario '9 - No Viable' en Uni_Productos
+                };
+
+                this.tipoProducto.factoring = objFactoring;
+            }
+
+            //Inicializando objeto de Crédito
+            if ($('#checkbox_no_viable_credito').attr('checked')) {
+                var objCredito = {
+                    'id': this.tipoProducto.credito_auto.id, //Id 
+                    'no_viable': $('#checkbox_no_viable_credito').attr('checked'),
+                    'no_viable_razon': $('#razon_nv_credito').val(), //lista Razón de Lead no viable 
+                    'no_viable_razon_fp': $('#fuera_perfil_razon_credito').val(), //lista Fuera de Perfil (Razón) 
+                    'no_viable_quien': $('#competencia_quien_credito').val(), //texto ¿Quién? 
+                    'no_viable_porque': $('#competencia_porque_credito').val(), //texto ¿Por qué? 
+                    'no_viable_producto': $('#que_producto_credito').val(), //lista ¿Qué producto? 
+                    'no_viable_razon_cf': $('#cond_financieras_credito').val(), //lista Condiciones Financieras 
+                    'no_viable_otro_c': $('#especifique_producto_credito').val(), //texto ¿Qué producto? 
+                    'no_viable_razon_ni': $('#no_interesado_credito').val(), //lista Razón No se encuentra interesado 
+                    'assigned_user_id': this.tipoProducto.credito_auto.assigned_user_id // Asigna a usuario '9 - No Viable' en Uni_Productos
+                };
+
+                this.tipoProducto.credito_auto = objCredito;
+            }
+
+            //Inicializando objeto de Fleet
+            if ($('#checkbox_no_viable_fleet').attr('checked')) {
+                var objFleet = {
+                    'id': this.tipoProducto.fleet.id, //Id 
+                    'no_viable': $('#checkbox_no_viable_fleet').attr('checked'),
+                    'no_viable_razon': $('#razon_nv_fleet').val(), //lista Razón de Lead no viable 
+                    'no_viable_razon_fp': $('#fuera_perfil_razon_fleet').val(), //lista Fuera de Perfil (Razón) 
+                    'no_viable_quien': $('#competencia_quien_fleet').val(), //texto ¿Quién? 
+                    'no_viable_porque': $('#competencia_porque_fleet').val(), //texto ¿Por qué? 
+                    'no_viable_producto': $('#que_producto_fleet').val(), //lista ¿Qué producto? 
+                    'no_viable_razon_cf': $('#cond_financieras_fleet').val(), //lista Condiciones Financieras 
+                    'no_viable_otro_c': $('#especifique_producto_fleet').val(), //texto ¿Qué producto? 
+                    'no_viable_razon_ni': $('#no_interesado_fleet').val(), //lista Razón No se encuentra interesado 
+                    'assigned_user_id': this.tipoProducto.fleet.assigned_user_id // Asigna a usuario '9 - No Viable' en Uni_Productos
+                };
+
+                this.tipoProducto.fleet = objFleet;
+            }
+
+            //Inicializando objeto de Uniclick
+            if ($('#checkbox_no_viable_uniclick').attr('checked')) {
+                var objUniclick = {
+                    'id': this.tipoProducto.uniclick.id, //Id 
+                    'no_viable': $('#checkbox_no_viable_uniclick').attr('checked'),
+                    'no_viable_razon': $('#razon_nv_uniclick').val(), //lista Razón de Lead no viable 
+                    'no_viable_razon_fp': $('#fuera_perfil_razon_uniclick').val(), //lista Fuera de Perfil (Razón) 
+                    'no_viable_quien': $('#competencia_quien_uniclick').val(), //texto ¿Quién? 
+                    'no_viable_porque': $('#competencia_porque_uniclick').val(), //texto ¿Por qué? 
+                    'no_viable_producto': $('#que_producto_uniclick').val(), //lista ¿Qué producto? 
+                    'no_viable_razon_cf': $('#cond_financieras_uniclick').val(), //lista Condiciones Financieras 
+                    'no_viable_otro_c': $('#especifique_producto_uniclick').val(), //texto ¿Qué producto? 
+                    'no_viable_razon_ni': $('#no_interesado_uniclick').val(), //lista Razón No se encuentra interesado 
+                    'assigned_user_id': this.tipoProducto.uniclick.assigned_user_id // Asigna a usuario '9 - No Viable' en Uni_Productos
+                };
+
+                this.tipoProducto.uniclick = objUniclick;
+            }
+
+            errors['error_no_viable'] = errors['error_no_viable'] || {};
+            errors['error_no_viable'].required = true;
+
+            //Establece el objeto para guardar
+            //this.model.set('account_uni_productos', this.tipoProducto);
+
+        }
         callback(null, fields, errors);
 
     },
@@ -486,12 +767,48 @@ const NoViableField = customization.extend(TextField, {
             $('#checkbox_no_viable_fleet').trigger('change');
             $('#checkbox_no_viable_uniclick').trigger('change');
 
+            $('#razon_nv_leasing').trigger('change');
+            $('#razon_nv_factoraje').trigger('change');
+            $('#razon_nv_credito').trigger('change');
+            $('#razon_nv_fleet').trigger('change');
+            $('#razon_nv_uniclick').trigger('change');
+
             //Se dispara evento change para mostrar campo de "Especifique producto"
             $('#que_producto_leasing').trigger('change');
             $('#que_producto_factoraje').trigger('change');
             $('#que_producto_credito').trigger('change');
             $('#que_producto_fleet').trigger('change');
             $('#que_producto_fleet').trigger('change');
+
+            //Validaciones para ocultar las secciones de los productos que no están en productos:
+            // LEAD, PROSPECTO CONTACTADO O PROSPECTO INTERESADO
+            if(this.tipos){
+                //Validando si se debe mostrar sección de Leasing
+                if(this.tipos.tct_tipo_cuenta_l_c != 'LEAD EN CALIFICACIÓN' && this.tipos.tct_tipo_cuenta_l_c != 'PROSPECTO CONTACTADO' && this.tipos.tct_tipo_cuenta_l_c != 'PROSPECTO INTERESADO'){
+                    $('#leasing').addClass('hide');
+                }
+
+                //Validando si se debe mostrar sección de Factoraje
+                if(this.tipos.tct_tipo_cuenta_f_c != 'LEAD EN CALIFICACIÓN' && this.tipos.tct_tipo_cuenta_f_c != 'PROSPECTO CONTACTADO' && this.tipos.tct_tipo_cuenta_f_c != 'PROSPECTO INTERESADO'){
+                    $('#factoraje').addClass('hide');
+                }
+
+                //Validando si se debe mostrar sección de Crédito
+                if(this.tipos.tct_tipo_cuenta_ca_c != 'LEAD EN CALIFICACIÓN' && this.tipos.tct_tipo_cuenta_ca_c != 'PROSPECTO CONTACTADO' && this.tipos.tct_tipo_cuenta_ca_c != 'PROSPECTO INTERESADO'){
+                    $('#credito').addClass('hide');
+                }
+
+                //Validando si se debe mostrar sección de Fleet
+                if(this.tipos.tct_tipo_cuenta_fl_c != 'LEAD EN CALIFICACIÓN' && this.tipos.tct_tipo_cuenta_fl_c != 'PROSPECTO CONTACTADO' && this.tipos.tct_tipo_cuenta_fl_c != 'PROSPECTO INTERESADO'){
+                    $('#fleet').addClass('hide');
+                }
+
+                //Validando si se debe mostrar sección de Uniclick
+                if(this.tipos.tct_tipo_cuenta_uc_c != 'LEAD EN CALIFICACIÓN' && this.tipos.tct_tipo_cuenta_uc_c != 'PROSPECTO CONTACTADO' && this.tipos.tct_tipo_cuenta_uc_c != 'PROSPECTO INTERESADO'){
+                    $('#uniclick').addClass('hide');
+                }
+
+            }
 
         }
     },
