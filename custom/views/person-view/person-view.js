@@ -460,7 +460,7 @@ DuplicateCheck: function (fields, errors, callback) {
                 messages: 'Cargando...'
             });
 
-            app.api.call("read", app.api.buildURL("Accounts/", null, null, {
+            var urlCuentas= app.api.buildURL("Accounts/", null, null, {
                 fields: "clean_name",
                 max_num: 5,
                 "filter": [
@@ -471,7 +471,9 @@ DuplicateCheck: function (fields, errors, callback) {
                         }
                     }
                 ]
-            }), null, {
+            })
+
+            app.api.call("read", urlCuentas , null, {
                 success: _.bind(function (data) {
                     app.alert.dismiss('validando_duplicados');
                     if (data.records.length > 0) {

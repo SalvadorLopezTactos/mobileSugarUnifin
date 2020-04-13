@@ -246,7 +246,7 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.productos.leasing.competencia_quien=data.records[i].no_viable_quien;
                                     selfProducts.productos.leasing.competencia_porque=data.records[i].no_viable_porque;
                                     selfProducts.productos.leasing.que_producto=data.records[i].no_viable_producto;
-                                    selfProducts.productos.leasing.especifique_producto=data.records[i].no_viable_producto;
+                                    selfProducts.productos.leasing.especifique_producto=data.records[i].no_viable_otro_c;
                                     selfProducts.productos.leasing.razon_no_interesado=data.records[i].no_viable_razon_ni;
 
                                     //Se establece arreglo que viaja en this.model.set
@@ -258,7 +258,7 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.tipoProducto.leasing.no_viable_porque=data.records[i].no_viable_porque;
                                     selfProducts.tipoProducto.leasing.no_viable_producto=data.records[i].no_viable_producto;
                                     selfProducts.tipoProducto.leasing.no_viable_razon_cf=data.records[i].no_viable_razon_cf;
-                                    selfProducts.tipoProducto.leasing.no_viable_otro_c=data.records[i].no_viable_producto;
+                                    selfProducts.tipoProducto.leasing.no_viable_otro_c=data.records[i].no_viable_otro_c;
                                     selfProducts.tipoProducto.leasing.no_viable_razon_ni=data.records[i].no_viable_razon_ni;
                                     selfProducts.tipoProducto.leasing.assigned_user_id=data.records[i].assigned_user_id;
                                 }
@@ -271,7 +271,7 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.productos.factoring.competencia_quien=data.records[i].no_viable_quien;
                                     selfProducts.productos.factoring.competencia_porque=data.records[i].no_viable_porque;
                                     selfProducts.productos.factoring.que_producto=data.records[i].no_viable_producto;
-                                    selfProducts.productos.factoring.especifique_producto=data.records[i].no_viable_producto;
+                                    selfProducts.productos.factoring.especifique_producto=data.records[i].no_viable_otro_c;
                                     selfProducts.productos.factoring.razon_no_interesado=data.records[i].no_viable_razon_ni;
 
                                     //Se establece arreglo que viaja en this.model.set
@@ -283,7 +283,7 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.tipoProducto.factoring.no_viable_porque=data.records[i].no_viable_porque;
                                     selfProducts.tipoProducto.factoring.no_viable_producto=data.records[i].no_viable_producto;
                                     selfProducts.tipoProducto.factoring.no_viable_razon_cf=data.records[i].no_viable_razon_cf;
-                                    selfProducts.tipoProducto.factoring.no_viable_otro_c=data.records[i].no_viable_producto;
+                                    selfProducts.tipoProducto.factoring.no_viable_otro_c=data.records[i].no_viable_otro_c;
                                     selfProducts.tipoProducto.factoring.no_viable_razon_ni=data.records[i].no_viable_razon_ni;
                                     selfProducts.tipoProducto.factoring.assigned_user_id=data.records[i].assigned_user_id;
 
@@ -297,7 +297,7 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.productos.credito.competencia_quien=data.records[i].no_viable_quien;
                                     selfProducts.productos.credito.competencia_porque=data.records[i].no_viable_porque;
                                     selfProducts.productos.credito.que_producto=data.records[i].no_viable_producto;
-                                    selfProducts.productos.credito.especifique_producto=data.records[i].no_viable_producto;
+                                    selfProducts.productos.credito.especifique_producto=data.records[i].no_viable_otro_c;
                                     selfProducts.productos.credito.razon_no_interesado=data.records[i].no_viable_razon_ni;
 
                                     //Se establece arreglo que viaja en this.model.set
@@ -309,7 +309,7 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.tipoProducto.credito_auto.no_viable_porque=data.records[i].no_viable_porque;
                                     selfProducts.tipoProducto.credito_auto.no_viable_producto=data.records[i].no_viable_producto;
                                     selfProducts.tipoProducto.credito_auto.no_viable_razon_cf=data.records[i].no_viable_razon_cf;
-                                    selfProducts.tipoProducto.credito_auto.no_viable_otro_c=data.records[i].no_viable_producto;
+                                    selfProducts.tipoProducto.credito_auto.no_viable_otro_c=data.records[i].no_viable_otro_c;
                                     selfProducts.tipoProducto.credito_auto.no_viable_razon_ni=data.records[i].no_viable_razon_ni;
                                     selfProducts.tipoProducto.credito_auto.assigned_user_id=data.records[i].assigned_user_id;
 
@@ -323,7 +323,7 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.productos.fleet.competencia_quien=data.records[i].no_viable_quien;
                                     selfProducts.productos.fleet.competencia_porque=data.records[i].no_viable_porque;
                                     selfProducts.productos.fleet.que_producto=data.records[i].no_viable_producto;
-                                    selfProducts.productos.fleet.especifique_producto=data.records[i].no_viable_producto;
+                                    selfProducts.productos.fleet.especifique_producto=data.records[i].no_viable_otro_c;
                                     selfProducts.productos.fleet.razon_no_interesado=data.records[i].no_viable_razon_ni;
 
                                     //Se establece arreglo que viaja en this.model.set
@@ -335,7 +335,7 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.tipoProducto.fleet.no_viable_porque=data.records[i].no_viable_porque;
                                     selfProducts.tipoProducto.fleet.no_viable_producto=data.records[i].no_viable_producto;
                                     selfProducts.tipoProducto.fleet.no_viable_razon_cf=data.records[i].no_viable_razon_cf;
-                                    selfProducts.tipoProducto.fleet.no_viable_otro_c=data.records[i].no_viable_producto;
+                                    selfProducts.tipoProducto.fleet.no_viable_otro_c=data.records[i].no_viable_otro_c;
                                     selfProducts.tipoProducto.fleet.no_viable_razon_ni=data.records[i].no_viable_razon_ni;
                                     selfProducts.tipoProducto.fleet.assigned_user_id=data.records[i].assigned_user_id;
 
@@ -349,7 +349,7 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.productos.uniclick.competencia_quien=data.records[i].no_viable_quien;
                                     selfProducts.productos.uniclick.competencia_porque=data.records[i].no_viable_porque;
                                     selfProducts.productos.uniclick.que_producto=data.records[i].no_viable_producto;
-                                    selfProducts.productos.uniclick.especifique_producto=data.records[i].no_viable_producto;
+                                    selfProducts.productos.uniclick.especifique_producto=data.records[i].no_viable_otro_c;
                                     selfProducts.productos.uniclick.razon_no_interesado=data.records[i].no_viable_razon_ni;
 
                                     //Se establece arreglo que viaja en this.model.set
@@ -361,7 +361,7 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.tipoProducto.uniclick.no_viable_porque=data.records[i].no_viable_porque;
                                     selfProducts.tipoProducto.uniclick.no_viable_producto=data.records[i].no_viable_producto;
                                     selfProducts.tipoProducto.uniclick.no_viable_razon_cf=data.records[i].no_viable_razon_cf;
-                                    selfProducts.tipoProducto.uniclick.no_viable_otro_c=data.records[i].no_viable_producto;
+                                    selfProducts.tipoProducto.uniclick.no_viable_otro_c=data.records[i].no_viable_otro_c;
                                     selfProducts.tipoProducto.uniclick.no_viable_razon_ni=data.records[i].no_viable_razon_ni;
                                     selfProducts.tipoProducto.uniclick.assigned_user_id=data.records[i].assigned_user_id;
 
@@ -543,11 +543,11 @@ const NoViableField = customization.extend(TextField, {
                 this.tipoProducto.uniclick = objUniclick;
             }
 
-            errors['error_no_viable'] = errors['error_no_viable'] || {};
-            errors['error_no_viable'].required = true;
-
             //Establece el objeto para guardar
-            //this.model.set('account_uni_productos', this.tipoProducto);
+            this.model.set('account_uni_productos', this.tipoProducto);
+            //this.model.set('no_viable', this.tipoProducto);
+            //this.context.attributes.model.set('account_uni_productos', this.tipoProducto);
+            this.context.attributes.model.attributes.no_viable=this.tipoProducto;
 
         }
         callback(null, fields, errors);
@@ -658,6 +658,7 @@ const NoViableField = customization.extend(TextField, {
             $(e.currentTarget).parent().parent().parent().children('.que_producto').removeClass('hide');
         }else{
             $(e.currentTarget).parent().parent().parent().children('.que_producto').addClass('hide');
+            $(e.currentTarget).parent().parent().parent().children('.especifique_producto').addClass('hide');
         }
 
         if(valor=='7'){//No se encuentra interesado
@@ -671,7 +672,10 @@ const NoViableField = customization.extend(TextField, {
     showEspecifiqueProducto(e){
 
         var valor=$(e.currentTarget).val();
-        if(valor=='4'){
+        //Al cargar la página, el campo de Especifique producto, solo se muestra cuando:
+        // Razón Lead No Viable= No tenemos el producto que requiere valor=>'4'
+        //¿Qué producto? = Otro=>'4'
+        if(valor=='4' && $(e.currentTarget).parent().parent().parent().find('.razon_nv').val()=='4'){
              $(e.currentTarget).parent().parent().next().removeClass('hide');
         }else{
             $(e.currentTarget).parent().parent().next().addClass('hide');
@@ -680,13 +684,17 @@ const NoViableField = customization.extend(TextField, {
     },
 
     onBeforeRender(){
+        this._super();
         //Condición para saber si se debe mostrar el campo de No viable
         if(this.model.get('tipo_registro_c')=='Lead' && !this.context.get('create')){
             this.vista='block';
         }else{
             this.vista='none';
         }
-
+           
+        if (this.model && this.view.isEditView() && !this.model.has(this.name)) {
+            this.model.set(this.def.name, this.tipoProducto, {silent: true});
+        }
     },
 
     onAfterRender(){
@@ -725,60 +733,10 @@ const NoViableField = customization.extend(TextField, {
         if(this.successFlag==1){
             //Se establecen valores de cada campo select con jquery ya que se debe de establecer un helper hbs para mobile
             //similar a la definición web custom/JavaScript/selectedOption-handlebar-helpers.js
-            //Campos Leasing
-            $('#razon_nv_leasing').val(this.productos.leasing.razon_nv);
-            $('#fuera_perfil_razon_leasing').val(this.productos.leasing.fuera_perfil_razon);
-            $('#cond_financieras_leasing').val(this.productos.leasing.condicionesFinancieras);
-            $('#que_producto_leasing').val(this.productos.leasing.que_producto);
-            $('#no_interesado_leasing').val(this.productos.leasing.razon_no_interesado);
-
-            //Campos Factoraje
-            $('#razon_nv_factoraje').val(this.productos.factoring.razon_nv);
-            $('#fuera_perfil_razon_factoraje').val(this.productos.factoring.fuera_perfil_razon);
-            $('#cond_financieras_factoraje').val(this.productos.factoring.condicionesFinancieras);
-            $('#que_producto_factoraje').val(this.productos.factoring.que_producto);
-            $('#no_interesado_factoraje').val(this.productos.factoring.razon_no_interesado);
-
-            //Campos Crédito Automotriz
-            $('#razon_nv_credito').val(this.productos.credito.razon_nv);
-            $('#fuera_perfil_razon_credito').val(this.productos.credito.fuera_perfil_razon);
-            $('#cond_financieras_credito').val(this.productos.credito.condicionesFinancieras);
-            $('#que_producto_credito').val(this.productos.credito.que_producto);
-            $('#no_interesado_credito').val(this.productos.credito.razon_no_interesado);
-
-            //Campos Fleet
-            $('#razon_nv_fleet').val(this.productos.fleet.razon_nv);
-            $('#fuera_perfil_razon_fleet').val(this.productos.fleet.fuera_perfil_razon);
-            $('#cond_financieras_fleet').val(this.productos.fleet.condicionesFinancieras);
-            $('#que_producto_fleet').val(this.productos.fleet.que_producto);
-            $('#no_interesado_fleet').val(this.productos.fleet.razon_no_interesado);
-
-            //Campos Uniclick
-            $('#razon_nv_uniclick').val(this.productos.uniclick.razon_nv);
-            $('#fuera_perfil_razon_uniclick').val(this.productos.uniclick.fuera_perfil_razon);
-            $('#cond_financieras_uniclick').val(this.productos.uniclick.condicionesFinancieras);
-            $('#que_producto_uniclick').val(this.productos.uniclick.que_producto);
-            $('#no_interesado_uniclick').val(this.productos.uniclick.razon_no_interesado);
+            this.setValuesDdw();
 
             //Se disparan manualmente los eventos change de cada campo check para mostrar campos dependientes
-            $('#checkbox_no_viable').trigger('change');
-            $('#checkbox_no_viable_factoraje').trigger('change');
-            $('#checkbox_no_viable_credito').trigger('change');
-            $('#checkbox_no_viable_fleet').trigger('change');
-            $('#checkbox_no_viable_uniclick').trigger('change');
-
-            $('#razon_nv_leasing').trigger('change');
-            $('#razon_nv_factoraje').trigger('change');
-            $('#razon_nv_credito').trigger('change');
-            $('#razon_nv_fleet').trigger('change');
-            $('#razon_nv_uniclick').trigger('change');
-
-            //Se dispara evento change para mostrar campo de "Especifique producto"
-            $('#que_producto_leasing').trigger('change');
-            $('#que_producto_factoraje').trigger('change');
-            $('#que_producto_credito').trigger('change');
-            $('#que_producto_fleet').trigger('change');
-            $('#que_producto_fleet').trigger('change');
+            this.triggerChangeEvents();
 
             //Validaciones para ocultar las secciones de los productos que no están en productos:
             // LEAD, PROSPECTO CONTACTADO O PROSPECTO INTERESADO
@@ -812,6 +770,68 @@ const NoViableField = customization.extend(TextField, {
 
         }
     },
+
+    setValuesDdw(){
+
+        //Campos Leasing
+        $('#razon_nv_leasing').val(this.productos.leasing.razon_nv);
+        $('#fuera_perfil_razon_leasing').val(this.productos.leasing.fuera_perfil_razon);
+        $('#cond_financieras_leasing').val(this.productos.leasing.condicionesFinancieras);
+        $('#que_producto_leasing').val(this.productos.leasing.que_producto);
+        $('#no_interesado_leasing').val(this.productos.leasing.razon_no_interesado);
+
+        //Campos Factoraje
+        $('#razon_nv_factoraje').val(this.productos.factoring.razon_nv);
+        $('#fuera_perfil_razon_factoraje').val(this.productos.factoring.fuera_perfil_razon);
+        $('#cond_financieras_factoraje').val(this.productos.factoring.condicionesFinancieras);
+        $('#que_producto_factoraje').val(this.productos.factoring.que_producto);
+        $('#no_interesado_factoraje').val(this.productos.factoring.razon_no_interesado);
+
+        //Campos Crédito Automotriz
+        $('#razon_nv_credito').val(this.productos.credito.razon_nv);
+        $('#fuera_perfil_razon_credito').val(this.productos.credito.fuera_perfil_razon);
+        $('#cond_financieras_credito').val(this.productos.credito.condicionesFinancieras);
+        $('#que_producto_credito').val(this.productos.credito.que_producto);
+        $('#no_interesado_credito').val(this.productos.credito.razon_no_interesado);
+
+        //Campos Fleet
+        $('#razon_nv_fleet').val(this.productos.fleet.razon_nv);
+        $('#fuera_perfil_razon_fleet').val(this.productos.fleet.fuera_perfil_razon);
+        $('#cond_financieras_fleet').val(this.productos.fleet.condicionesFinancieras);
+        $('#que_producto_fleet').val(this.productos.fleet.que_producto);
+        $('#no_interesado_fleet').val(this.productos.fleet.razon_no_interesado);
+
+        //Campos Uniclick
+        $('#razon_nv_uniclick').val(this.productos.uniclick.razon_nv);
+        $('#fuera_perfil_razon_uniclick').val(this.productos.uniclick.fuera_perfil_razon);
+        $('#cond_financieras_uniclick').val(this.productos.uniclick.condicionesFinancieras);
+        $('#que_producto_uniclick').val(this.productos.uniclick.que_producto);
+        $('#no_interesado_uniclick').val(this.productos.uniclick.razon_no_interesado);
+
+    },
+
+    triggerChangeEvents(){
+
+        $('#checkbox_no_viable').trigger('change');
+        $('#checkbox_no_viable_factoraje').trigger('change');
+        $('#checkbox_no_viable_credito').trigger('change');
+        $('#checkbox_no_viable_fleet').trigger('change');
+        $('#checkbox_no_viable_uniclick').trigger('change');
+
+        $('#razon_nv_leasing').trigger('change');
+        $('#razon_nv_factoraje').trigger('change');
+        $('#razon_nv_credito').trigger('change');
+        $('#razon_nv_fleet').trigger('change');
+        $('#razon_nv_uniclick').trigger('change');
+
+        //Se dispara evento change para mostrar campo de "Especifique producto"
+        $('#que_producto_leasing').trigger('change');
+        $('#que_producto_factoraje').trigger('change');
+        $('#que_producto_credito').trigger('change');
+        $('#que_producto_fleet').trigger('change');
+        $('#que_producto_uniclick').trigger('change');
+
+    }
    
 });
 
