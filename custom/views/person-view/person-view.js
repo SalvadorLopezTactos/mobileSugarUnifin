@@ -484,8 +484,10 @@ DuplicateCheck: function (fields, errors, callback) {
                                 etiquetas += self.usuarios[key] + '\n';
                             }
                         });
-                        errors['primernombre_c'] = errors['primernombre_c'] || {};
-                        errors['primernombre_c'].required = true;
+                        //Se establece un campo 'nombre' que no existe para solo llenar el arreglo errors
+                        //y evitar que se guarde el registro, sin pintar de color rojo ningún campo (tal y como funciona en web)
+                        errors['nombre'] = errors['nombre'] || {};
+                        errors['nombre'].required = true;
 
                         //Se muestra alerta de esta manera ya que al llegar al callback, el alert.show se oculta y no es posible ver el detalle del error
                         dialog.showAlert("Ya existe una persona registrada con el mismo nombre.\nFavor de comunicarse con alguno de los siguientes usuarios:\n" + etiquetas + "");

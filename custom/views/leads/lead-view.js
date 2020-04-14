@@ -429,9 +429,10 @@ const LeadEditView = customization.extend(EditView, {
 					success: _.bind(function (data) {
 						app.alert.dismiss('validando_duplicados');
 						if (data.records.length > 0) {
-
-							errors['nombre_c'] = errors['nombre_c'] || {};
-							errors['nombre_c'].required = true;
+                            //Se establece un campo 'nombre' que no existe para solo llenar el arreglo errors
+                            //y evitar que se guarde el registro, sin pintar de color rojo ningún campo (tal y como funciona en web)
+							errors['nombre'] = errors['nombre'] || {};
+							errors['nombre'].required = true;
 
 							callback(null, fields, errors);
 							if(!_.isEmpty(errors)){
@@ -464,8 +465,8 @@ const LeadEditView = customization.extend(EditView, {
 									app.alert.dismiss('validando_duplicados');
 									if(data.records.length>0){
 
-										errors['nombre_c'] = errors['nombre_c'] || {};
-										errors['nombre_c'].required = true;
+										errors['nombre'] = errors['nombre'] || {};
+										errors['nombre'].required = true;
 									}
 
 									callback(null, fields, errors);
