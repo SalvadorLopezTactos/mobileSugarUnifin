@@ -46,6 +46,8 @@ const NoViableField = customization.extend(TextField, {
             this.model.addValidationTask('GuardaUniProductos', _.bind(this.saveUniProductos, this));
 
         }
+
+         this.model.on('data:sync:complete', this.deletePlaceholder,this);
         
     },
 
@@ -698,6 +700,7 @@ const NoViableField = customization.extend(TextField, {
     },
 
     onAfterRender(){
+
         //Obtener la info de cada usuario por producto para saber si se permite la edición al respectivo campo No viable
         var id_current_user=App.user.get('id');
         //Leasing
@@ -769,6 +772,18 @@ const NoViableField = customization.extend(TextField, {
             }
 
         }
+    },
+
+    /*
+    * Función para evitar bug en el que se muestra Teléfonos como placeholder en todos los campos
+    */
+    deletePlaceholder(){
+        //Se establece función para evitar 'bug' que hace que se muestre 'Teléfonos' en el placeholder
+        //Oculta placeholder a campos de texto
+        $('input').removeAttr('placeholder');
+
+        //Oculta placeholder a campos desplegables
+        $('span.placeholder:contains("Teléfonos")').html("");
     },
 
     setValuesDdw(){
