@@ -53,10 +53,11 @@ const NoViableField = customization.extend(TextField, {
 
     getListValuesNoViable(){
 
-        selfListas=this;
+        var selfListas=this;
         app.alert.show('getlists', {
-                level: 'process',
-                messages: 'Cargando...'
+                level: 'load',
+                closeable: false,
+                messages: app.lang.get('LBL_LOADING'),
             });
         app.api.call('GET', app.api.buildURL('GetDropdownList/razones_ddw_list,fuera_de_perfil_ddw_list,no_producto_requiere_list,razones_cf_list,tct_razon_ni_l_ddw_c_list'), null, {
                 success: _.bind(function (data) {
@@ -203,10 +204,11 @@ const NoViableField = customization.extend(TextField, {
 
     getTipoCuentaPorProducto(){
 
-        selfTipos=this;
+        var selfTipos=this;
         app.alert.show('getInfoTipos', {
-                level: 'process',
-                messages: 'Cargando...'
+                level: 'load',
+                closeable: false,
+                messages: app.lang.get('LBL_LOADING'),
         });
 
         var idC = this.model.get('id');
@@ -228,10 +230,11 @@ const NoViableField = customization.extend(TextField, {
     },
 
     getProductsInfo(){
-        selfProducts=this;
+        var selfProducts=this;
         app.alert.show('getInfoProducts', {
-                level: 'process',
-                messages: 'Cargando...'
+                level: 'load',
+                closeable: false,
+                messages: app.lang.get('LBL_LOADING'),
             });
         app.api.call('GET', app.api.buildURL('Accounts/'+this.model.get("id")+'/link/accounts_uni_productos_1'), null, {
                 success: _.bind(function (data) {
