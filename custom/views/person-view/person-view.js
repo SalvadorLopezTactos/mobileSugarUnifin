@@ -175,6 +175,9 @@ const AccountEditView = customization.extend(EditView, {
         $('input').removeAttr('placeholder');
         $('span.placeholder:contains("Teléfonos")').html("");
 
+        //Se establece vacío el campo Macrosector tal y como se tiene en versión Web
+        $('select[name="tct_macro_sector_ddw_c"').val('');
+
         if (App.user.attributes.deudor_factoraje_c != true) {
             //Readonly check factoraje
            $('.field__label:contains("Deudor Factoraje")').parent().find('input').eq(0).attr('style','pointer-events:none');
