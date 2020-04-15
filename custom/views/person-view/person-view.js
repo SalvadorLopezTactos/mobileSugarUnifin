@@ -100,6 +100,10 @@ const AccountEditView = customization.extend(EditView, {
         this.getListValues();
 
         this.model.on('change:name', this.cleanName, this);
+        
+        //Se agrega este evento para evitar 'BUG' en el que se muestra la palabra 'Teléfonos'
+        //en los placeholder
+        this.listenTo(this.model,'change', this.deletePlaceholder);
 
         this.model.on('data:sync:complete', this.setLengthPhone,this);
         //Bloquear registro al tener campo No Contactar
@@ -247,6 +251,18 @@ const AccountEditView = customization.extend(EditView, {
             original_name= original_name.toUpperCase();
             this.model.set("clean_name", original_name);
         }
+    },
+
+    /*
+    * Función para evitar bug en el que se muestra Teléfonos como placeholder en todos los campos
+    */
+    deletePlaceholder(){
+        //Se establece función para evitar 'bug' que hace que se muestre 'Teléfonos' en el placeholder
+        //Oculta placeholder a campos de texto
+        $('input').removeAttr('placeholder');
+
+        //Oculta placeholder a campos desplegables
+        $('span.placeholder:contains("Teléfonos")').addClass('hide');
     },
 
     _hideGuardar: function(modelo){
