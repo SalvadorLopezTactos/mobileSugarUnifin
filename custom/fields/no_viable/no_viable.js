@@ -567,6 +567,7 @@ const NoViableField = customization.extend(TextField, {
 
         var mensaje='\nNo viable '+producto+': Hace falta llenar los siguientes campos:\n';
         var faltantes = 0;
+        var arrayResponse=[];
 
         if($('#razon_nv_'+producto).is(":visible") && ($('#razon_nv_'+producto).val()=="" || $('#razon_nv_'+producto).val()=="0" )){
             $('#razon_nv_'+producto).parent().parent().addClass('error');
@@ -616,7 +617,13 @@ const NoViableField = customization.extend(TextField, {
             faltantes+=1;
         }
 
-        return [mensaje,faltantes];
+        if(faltantes==0){
+            arrayResponse=['',faltantes];
+        }else{
+            arrayResponse=[mensaje,faltantes];
+        }
+
+        return arrayResponse;
     },
 
     muestraRazonNoViable(e){
@@ -691,7 +698,14 @@ const NoViableField = customization.extend(TextField, {
     onBeforeRender(){
         this._super();
         //Condición para saber si se debe mostrar el campo de No viable
+        /*
         if(this.model.get('tipo_registro_c')=='Lead' && !this.context.get('create')){
+            this.vista='block';
+        }else{
+            this.vista='none';
+        }*/
+
+        if(!this.context.get('create')){
             this.vista='block';
         }else{
             this.vista='none';
