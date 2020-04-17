@@ -549,9 +549,9 @@ const NoViableField = customization.extend(TextField, {
             }
 
             //Establece el objeto para guardar
-            this.model.set('account_uni_productos', this.tipoProducto);
+            //this.model.set('account_uni_productos', this.tipoProducto);
             //this.model.set('no_viable', this.tipoProducto);
-            //this.context.attributes.model.set('account_uni_productos', this.tipoProducto);
+            this.context.attributes.model.attributes.account_uni_productos=this.tipoProducto;
             this.context.attributes.model.attributes.no_viable=this.tipoProducto;
 
         }
