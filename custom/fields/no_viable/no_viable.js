@@ -38,14 +38,20 @@ const NoViableField = customization.extend(TextField, {
         //Inicializando arreglo de productos vacío
         this.initializeProducts();
         this.initializeProductsForModel();
+        App.tipoProducto=this.tipoProducto;
 
         this.model.addValidationTask('validateCamposNoViable', _.bind(this.validateCamposNoViable, this));
         //Guarda los valores hacia el modulo UNI PRODUCTOS
+        //El seteo al modelo con los valores del producto se hace en person-view.js, en este archivo (no_viable.js)
+        //se obtienen los valores de los uni_productos relacionados y se establece una variable en App para poder leerla
+        //en la vista de edición de Cuenta
+        /*
         if(!this.context.get('create')){
 
-            this.model.addValidationTask('GuardaUniProductos', _.bind(this.saveUniProductos, this));
+            //this.model.addValidationTask('GuardaUniProductos', _.bind(this.saveUniProductos, this));
 
         }
+        */
 
          this.model.on('data:sync:complete', this.deletePlaceholder,this);
         
@@ -376,8 +382,8 @@ const NoViableField = customization.extend(TextField, {
                             selfProducts.successFlag=1;
 
                             selfProducts.render();
-
                         }
+                        App.tipoProducto=selfProducts.tipoProducto;
                     }
                 }, selfProducts),
                 
@@ -446,115 +452,6 @@ const NoViableField = customization.extend(TextField, {
             errors['error_no_viable'].required = true;
         }
 
-        callback(null, fields, errors);
-
-    },
-
-    saveUniProductos(fields, errors, callback){
-
-        if (this.model.get('id') != "" && this.model.get('id') != undefined && Object.entries(errors).length == 0) {
-            //Inicializando objeto de Leasing
-            if ($('#checkbox_no_viable').attr('checked')) {
-                var objLeasing = {
-                    'id': this.tipoProducto.leasing.id, //Id
-                    'no_viable': $('#checkbox_no_viable').attr('checked'),
-                    'no_viable_razon': $('#razon_nv_leasing').val(), //lista Razón de Lead no viable 
-                    'no_viable_razon_fp': $('#fuera_perfil_razon_leasing').val(), //lista Fuera de Perfil (Razón) 
-                    'no_viable_quien': $('#competencia_quien_leasing').val(), //texto ¿Quién? 
-                    'no_viable_porque': $('#competencia_porque_leasing').val(), //texto ¿Por qué? 
-                    'no_viable_producto': $('#que_producto_leasing').val(), //lista ¿Qué producto? 
-                    'no_viable_razon_cf': $('#cond_financieras_leasing').val(), //lista Condiciones Financieras 
-                    'no_viable_otro_c': $('#especifique_producto_leasing').val(), //texto ¿Qué producto? 
-                    'no_viable_razon_ni': $('#no_interesado_leasing').val(), //lista Razón No se encuentra interesado 
-                    'assigned_user_id': this.tipoProducto.leasing.assigned_user_id // Asigna a usuario '9 - No Viable' en Uni_Productos
-                };
-
-                this.tipoProducto.leasing = objLeasing;
-            }
-
-            //Inicializando objeto de Factoraje
-            if ($('#checkbox_no_viable_factoraje').attr('checked')) {
-                var objFactoring = {
-                    'id': this.tipoProducto.factoring.id, //Id
-                    'no_viable': $('#checkbox_no_viable_factoraje').attr('checked'),
-                    'no_viable_razon': $('#razon_nv_factoraje').val(), //lista Razón de Lead no viable 
-                    'no_viable_razon_fp': $('#fuera_perfil_razon_factoraje').val(), //lista Fuera de Perfil (Razón) 
-                    'no_viable_quien': $('#competencia_quien_factoraje').val(), //texto ¿Quién? 
-                    'no_viable_porque': $('#competencia_porque_factoraje').val(), //texto ¿Por qué? 
-                    'no_viable_producto': $('#que_producto_factoraje').val(), //lista ¿Qué producto? 
-                    'no_viable_razon_cf': $('#cond_financieras_factoraje').val(), //lista Condiciones Financieras
-                    'no_viable_otro_c': $('#especifique_producto_factoraje').val(), //texto ¿Qué producto?
-                    'no_viable_razon_ni': $('#no_interesado_factoraje').val(), //lista Razón No se encuentra interesado
-                    'assigned_user_id': this.tipoProducto.factoring.assigned_user_id // Asigna a usuario '9 - No Viable' en Uni_Productos
-                };
-
-                this.tipoProducto.factoring = objFactoring;
-            }
-
-            //Inicializando objeto de Crédito
-            if ($('#checkbox_no_viable_credito').attr('checked')) {
-                var objCredito = {
-                    'id': this.tipoProducto.credito_auto.id, //Id 
-                    'no_viable': $('#checkbox_no_viable_credito').attr('checked'),
-                    'no_viable_razon': $('#razon_nv_credito').val(), //lista Razón de Lead no viable 
-                    'no_viable_razon_fp': $('#fuera_perfil_razon_credito').val(), //lista Fuera de Perfil (Razón) 
-                    'no_viable_quien': $('#competencia_quien_credito').val(), //texto ¿Quién? 
-                    'no_viable_porque': $('#competencia_porque_credito').val(), //texto ¿Por qué? 
-                    'no_viable_producto': $('#que_producto_credito').val(), //lista ¿Qué producto? 
-                    'no_viable_razon_cf': $('#cond_financieras_credito').val(), //lista Condiciones Financieras 
-                    'no_viable_otro_c': $('#especifique_producto_credito').val(), //texto ¿Qué producto? 
-                    'no_viable_razon_ni': $('#no_interesado_credito').val(), //lista Razón No se encuentra interesado 
-                    'assigned_user_id': this.tipoProducto.credito_auto.assigned_user_id // Asigna a usuario '9 - No Viable' en Uni_Productos
-                };
-
-                this.tipoProducto.credito_auto = objCredito;
-            }
-
-            //Inicializando objeto de Fleet
-            if ($('#checkbox_no_viable_fleet').attr('checked')) {
-                var objFleet = {
-                    'id': this.tipoProducto.fleet.id, //Id 
-                    'no_viable': $('#checkbox_no_viable_fleet').attr('checked'),
-                    'no_viable_razon': $('#razon_nv_fleet').val(), //lista Razón de Lead no viable 
-                    'no_viable_razon_fp': $('#fuera_perfil_razon_fleet').val(), //lista Fuera de Perfil (Razón) 
-                    'no_viable_quien': $('#competencia_quien_fleet').val(), //texto ¿Quién? 
-                    'no_viable_porque': $('#competencia_porque_fleet').val(), //texto ¿Por qué? 
-                    'no_viable_producto': $('#que_producto_fleet').val(), //lista ¿Qué producto? 
-                    'no_viable_razon_cf': $('#cond_financieras_fleet').val(), //lista Condiciones Financieras 
-                    'no_viable_otro_c': $('#especifique_producto_fleet').val(), //texto ¿Qué producto? 
-                    'no_viable_razon_ni': $('#no_interesado_fleet').val(), //lista Razón No se encuentra interesado 
-                    'assigned_user_id': this.tipoProducto.fleet.assigned_user_id // Asigna a usuario '9 - No Viable' en Uni_Productos
-                };
-
-                this.tipoProducto.fleet = objFleet;
-            }
-
-            //Inicializando objeto de Uniclick
-            if ($('#checkbox_no_viable_uniclick').attr('checked')) {
-                var objUniclick = {
-                    'id': this.tipoProducto.uniclick.id, //Id 
-                    'no_viable': $('#checkbox_no_viable_uniclick').attr('checked'),
-                    'no_viable_razon': $('#razon_nv_uniclick').val(), //lista Razón de Lead no viable 
-                    'no_viable_razon_fp': $('#fuera_perfil_razon_uniclick').val(), //lista Fuera de Perfil (Razón) 
-                    'no_viable_quien': $('#competencia_quien_uniclick').val(), //texto ¿Quién? 
-                    'no_viable_porque': $('#competencia_porque_uniclick').val(), //texto ¿Por qué? 
-                    'no_viable_producto': $('#que_producto_uniclick').val(), //lista ¿Qué producto? 
-                    'no_viable_razon_cf': $('#cond_financieras_uniclick').val(), //lista Condiciones Financieras 
-                    'no_viable_otro_c': $('#especifique_producto_uniclick').val(), //texto ¿Qué producto? 
-                    'no_viable_razon_ni': $('#no_interesado_uniclick').val(), //lista Razón No se encuentra interesado 
-                    'assigned_user_id': this.tipoProducto.uniclick.assigned_user_id // Asigna a usuario '9 - No Viable' en Uni_Productos
-                };
-
-                this.tipoProducto.uniclick = objUniclick;
-            }
-
-            //Establece el objeto para guardar
-            //this.model.set('account_uni_productos', this.tipoProducto);
-            //this.model.set('no_viable', this.tipoProducto);
-            this.context.attributes.model.attributes.account_uni_productos=this.tipoProducto;
-            this.context.attributes.model.attributes.no_viable=this.tipoProducto;
-
-        }
         callback(null, fields, errors);
 
     },
