@@ -563,6 +563,23 @@ onHeaderSaveClick() {
                 };
 
                 this.tipoProducto.leasing = objLeasing;
+            }else{
+                var objLeasing = {
+                    'id': this.tipoProducto.leasing.id, //Id
+                    'no_viable': $('#checkbox_no_viable').attr('checked'),
+                    'no_viable_razon': '', //lista Razón de Lead no viable 
+                    'no_viable_razon_fp': '', //lista Fuera de Perfil (Razón) 
+                    'no_viable_quien': '', //texto ¿Quién? 
+                    'no_viable_porque': '', //texto ¿Por qué? 
+                    'no_viable_producto': '', //lista ¿Qué producto? 
+                    'no_viable_razon_cf': '', //lista Condiciones Financieras 
+                    'no_viable_otro_c': '', //texto ¿Qué producto? 
+                    'no_viable_razon_ni': '', //lista Razón No se encuentra interesado 
+                    'assigned_user_id': this.tipoProducto.leasing.assigned_user_id // Asigna a usuario '9 - No Viable' en Uni_Productos
+                };
+
+                this.tipoProducto.leasing = objLeasing;
+
             }
 
             //Inicializando objeto de Factoraje
@@ -582,6 +599,24 @@ onHeaderSaveClick() {
                 };
 
                 this.tipoProducto.factoring = objFactoring;
+            }else{
+
+                var objFactoring = {
+                    'id': this.tipoProducto.factoring.id, //Id
+                    'no_viable': $('#checkbox_no_viable_factoraje').attr('checked'),
+                    'no_viable_razon': '', //lista Razón de Lead no viable 
+                    'no_viable_razon_fp': '', //lista Fuera de Perfil (Razón) 
+                    'no_viable_quien': '', //texto ¿Quién? 
+                    'no_viable_porque': '', //texto ¿Por qué? 
+                    'no_viable_producto': '', //lista ¿Qué producto? 
+                    'no_viable_razon_cf': '', //lista Condiciones Financieras
+                    'no_viable_otro_c': '', //texto ¿Qué producto?
+                    'no_viable_razon_ni': '', //lista Razón No se encuentra interesado
+                    'assigned_user_id': this.tipoProducto.factoring.assigned_user_id // Asigna a usuario '9 - No Viable' en Uni_Productos
+                };
+
+                this.tipoProducto.factoring = objFactoring;
+
             }
 
             //Inicializando objeto de Crédito
@@ -601,6 +636,24 @@ onHeaderSaveClick() {
                 };
 
                 this.tipoProducto.credito_auto = objCredito;
+            }else{
+
+                var objCredito = {
+                    'id': this.tipoProducto.credito_auto.id, //Id 
+                    'no_viable': $('#checkbox_no_viable_credito').attr('checked'),
+                    'no_viable_razon': '', //lista Razón de Lead no viable 
+                    'no_viable_razon_fp': '', //lista Fuera de Perfil (Razón) 
+                    'no_viable_quien': '', //texto ¿Quién? 
+                    'no_viable_porque': '', //texto ¿Por qué? 
+                    'no_viable_producto': '', //lista ¿Qué producto? 
+                    'no_viable_razon_cf': '', //lista Condiciones Financieras 
+                    'no_viable_otro_c': '', //texto ¿Qué producto? 
+                    'no_viable_razon_ni': '', //lista Razón No se encuentra interesado 
+                    'assigned_user_id': this.tipoProducto.credito_auto.assigned_user_id // Asigna a usuario '9 - No Viable' en Uni_Productos
+                };
+
+                this.tipoProducto.credito_auto = objCredito;
+
             }
 
             //Inicializando objeto de Fleet
@@ -620,6 +673,24 @@ onHeaderSaveClick() {
                 };
 
                 this.tipoProducto.fleet = objFleet;
+            }else{
+
+                var objFleet = {
+                    'id': this.tipoProducto.fleet.id, //Id 
+                    'no_viable': $('#checkbox_no_viable_fleet').attr('checked'),
+                    'no_viable_razon': '', //lista Razón de Lead no viable 
+                    'no_viable_razon_fp': '', //lista Fuera de Perfil (Razón) 
+                    'no_viable_quien': '', //texto ¿Quién? 
+                    'no_viable_porque': '', //texto ¿Por qué? 
+                    'no_viable_producto': '', //lista ¿Qué producto? 
+                    'no_viable_razon_cf': '', //lista Condiciones Financieras 
+                    'no_viable_otro_c': '', //texto ¿Qué producto? 
+                    'no_viable_razon_ni': '', //lista Razón No se encuentra interesado 
+                    'assigned_user_id': this.tipoProducto.fleet.assigned_user_id // Asigna a usuario '9 - No Viable' en Uni_Productos
+                };
+
+                this.tipoProducto.fleet = objFleet;
+
             }
 
             //Inicializando objeto de Uniclick
@@ -639,6 +710,24 @@ onHeaderSaveClick() {
                 };
 
                 this.tipoProducto.uniclick = objUniclick;
+            }else{
+
+                var objUniclick = {
+                    'id': this.tipoProducto.uniclick.id, //Id 
+                    'no_viable': $('#checkbox_no_viable_uniclick').attr('checked'),
+                    'no_viable_razon': '', //lista Razón de Lead no viable 
+                    'no_viable_razon_fp': '', //lista Fuera de Perfil (Razón) 
+                    'no_viable_quien': '', //texto ¿Quién? 
+                    'no_viable_porque': '', //texto ¿Por qué? 
+                    'no_viable_producto': '', //lista ¿Qué producto? 
+                    'no_viable_razon_cf': '', //lista Condiciones Financieras 
+                    'no_viable_otro_c': '', //texto ¿Qué producto? 
+                    'no_viable_razon_ni': '', //lista Razón No se encuentra interesado 
+                    'assigned_user_id': this.tipoProducto.uniclick.assigned_user_id // Asigna a usuario '9 - No Viable' en Uni_Productos
+                };
+
+                this.tipoProducto.uniclick = objUniclick;
+
             }
 
             //Establece el objeto para guardar
