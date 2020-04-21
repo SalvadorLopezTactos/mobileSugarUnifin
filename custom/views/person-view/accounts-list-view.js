@@ -15,7 +15,7 @@ const AccountsListView = customization.extend(FilteredListView, {
         var user_puesto = App.user.attributes.puestousuario_c;
         
         //Solución para filtrar por promotores
-        var filtroPromotor = ['5','4','11','10','16','15','3','2','9','8','14','33','6','12','17'];
+        var filtroPromotor = ['5','4','11','10','16','15','3','2','9','8','14','33','6','12','17','53'];
         if (filtroPromotor.indexOf(user_puesto) != -1) {
             this.collection.filterDef = {
                     $or :[
