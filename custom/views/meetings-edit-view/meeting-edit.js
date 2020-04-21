@@ -36,6 +36,7 @@ const MeetingEditView = customization.extend(EditView, {
 
         if(this.isCreate){
             this.disableStatus();
+            this.disableAssigned();
 
             //Se oculta campo de resultado en la creación de la Reunión
             /*Solo será visible el resultado cuando el estado se Realizada o No Realizada*/
@@ -167,6 +168,7 @@ const MeetingEditView = customization.extend(EditView, {
     */
     onAfterShow(options){
       this.disableStatus();
+      this.disableAssigned();
     },
 
     /*
@@ -223,6 +225,16 @@ const MeetingEditView = customization.extend(EditView, {
     disableStatus: function(){
             $('select[name="status"]').parent().parent().addClass("field--readonly");
             $('select[name="status"]').parent().attr("style", "pointer-events:none");
+    },
+
+    disableAssigned:function(){
+        $('.assigned_user_meeting').attr("style", "pointer-events:none");
+        $('.assigned_user_meeting').children('.field--relate').removeClass('fast-click-highlighted');
+        $('.assigned_user_meeting').children('.field--relate').addClass('field--readonly');
+        $('.assigned_user_meeting').children().children('.field__controls').removeClass('field__controls--flex');
+        $('.assigned_user_meeting').children().children('.field__controls').addClass('field__controls--readonly');
+        $('.assigned_user_meeting').children().find('.btn-group').addClass('hide');
+
     },
 
     disablestatusSync:function () {
