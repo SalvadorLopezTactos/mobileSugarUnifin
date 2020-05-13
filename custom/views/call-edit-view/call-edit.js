@@ -30,7 +30,7 @@ customization.registerListItemDataProvider({
 
             body: model.get('name'),
 
-            title: model.get('tipo_registro_c'),
+            title: model.get('tipo_registro_cuenta_c'),
         };
     },
 

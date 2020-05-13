@@ -270,11 +270,11 @@ const AccountEditView = customization.extend(EditView, {
 	//Agregando longitud máxima a campo de teléfono
 	$('input[type="tel"]').attr('maxlength',"10");
 
-	var tipo = this.model.get('tipo_registro_c');
+	var tipo = this.model.get('tipo_registro_cuenta_c');
 	var puesto = modelo.puestousuario_c;
       //var puesto = app.user.attributes.type;
-
-      if((tipo=="Prospecto" || tipo=="Cliente") && (puesto==6 || puesto==12 || puesto==17))
+      //tipo 2 - Prospecto, 3 - Cliente
+      if((tipo=="2" || tipo=="3") && (puesto==6 || puesto==12 || puesto==17))
       {
       	$(".header__btn--save").addClass("hide")
       }
