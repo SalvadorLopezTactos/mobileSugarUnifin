@@ -1,3 +1,4 @@
+
 const app = SUGAR.App;
 const customization = require('%app.core%/customization.js');
 const TextField = require('%app.fields%/text-field');
@@ -141,6 +142,7 @@ const NoViableField = customization.extend(TextField, {
         this.tipoProducto = {
             'leasing': {
                 'id': '',
+                'producto':'1',
                 'no_viable': '',
                 'no_viable_razon': '',
                 'no_viable_razon_fp': '',
@@ -154,6 +156,7 @@ const NoViableField = customization.extend(TextField, {
             },
             'factoring': {
                 'id': '',
+                'producto':'4',
                 'no_viable': '',
                 'no_viable_razon': '',
                 'no_viable_razon_fp': '',
@@ -167,6 +170,7 @@ const NoViableField = customization.extend(TextField, {
             },
             'credito_auto': {
                 'id': '',
+                'producto':'3',
                 'no_viable': '',
                 'no_viable_razon': '',
                 'no_viable_razon_fp': '',
@@ -180,6 +184,7 @@ const NoViableField = customization.extend(TextField, {
             },
             'fleet': {
                 'id': '',
+                'producto':'6',
                 'no_viable': '',
                 'no_viable_razon': '',
                 'no_viable_razon_fp': '',
@@ -193,6 +198,7 @@ const NoViableField = customization.extend(TextField, {
             },
             'uniclick': {
                 'id': '',
+                'producto':'8',
                 'no_viable': '',
                 'no_viable_razon': '',
                 'no_viable_razon_fp': '',
@@ -202,7 +208,8 @@ const NoViableField = customization.extend(TextField, {
                 'no_viable_razon_cf': '',
                 'no_viable_otro_c': '',
                 'no_viable_razon_ni': '',
-                'assigned_user_id': ''
+                'assigned_user_id': '',
+                'canal_c':''
             }
         };
 
@@ -375,6 +382,9 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.tipoProducto.uniclick.no_viable_otro_c=data.records[i].no_viable_otro_c;
                                     selfProducts.tipoProducto.uniclick.no_viable_razon_ni=data.records[i].no_viable_razon_ni;
                                     selfProducts.tipoProducto.uniclick.assigned_user_id=data.records[i].assigned_user_id;
+
+                                    //Sección para establecer valor a campo de canal uniclick
+                                    $(".canalUniclick").val(data.records[i].canal_c);
 
                                 }
                             }

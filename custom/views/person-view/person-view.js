@@ -115,6 +115,8 @@ const AccountEditView = customization.extend(EditView, {
         this.model.addValidationTask('check_info', _.bind(this.doValidateInfoReq, this));
         //Validación para caracteres especiales en campos de nombres
         this.model.addValidationTask('check_TextOnly', _.bind(this.checkTextOnly, this));
+
+        this.model.addValidationTask('validateCanalUniclick', _.bind(this.validateCanalUniclick, this));
         
         //validación para mostrar en texto el nombre de los campos requeridos
         this.model.addValidationTask('valida_requeridos',_.bind(this.valida_requeridos, this));
@@ -417,6 +419,33 @@ checkTextOnly:function(fields, errors, callback){
             //Se utiliza dialog ya que al utilizar app.alert.show, como entra en función callback
             //el msj se oculta y no se alcanza a ver el detalle del error
             dialog.showAlert('Los siguientes campos no permiten caracteres especiales:\n'+ camponame);
+        }
+},
+
+validateCanalUniclick(fields, errors, callback){
+
+        var valorCanal=$(".canalUniclick").val();
+        var faltantesUniclickCanal = 0;
+        var userprod = (app.user.attributes.productos_c).replace(/\^/g, "");
+
+
+        if (valorCanal=="0" && userprod.includes('8') ) {
+            $(".canalUniclick").parent().parent().addClass('error');
+            faltantesUniclickCanal += 1;
+        }
+        else {
+            $(".canalUniclick").parent().parent().removeClass('error');
+        }
+        if (faltantesUniclickCanal > 0) {
+            //dialog.showAlert('Hace falta seleccionar algún canal para el producto Uniclick');
+            errors['error_UniclickCanal'] = errors['error_UniclickCanal'] || {};
+            errors['error_UniclickCanal'].required = true;
+        }
+
+        callback(null, fields, errors);
+
+        if (faltantesUniclickCanal > 0) {
+            dialog.showAlert('Hace falta seleccionar algún canal para el producto Uniclick');
         }
 },
 
@@ -742,10 +771,21 @@ onHeaderSaveClick() {
 
             }
 
+            //Agregando canal uniclick en objeto que viaja a uni_Productos
+            this.tipoProducto.uniclick.canal_c=$(".canalUniclick").val();
+
+
             //Establece el objeto para guardar
             this.model.set('account_uni_productos', this.tipoProducto);
             this.context.attributes.model.attributes.no_viable=this.tipoProducto;
 
+    }else{
+        //Agregando canal uniclick en objeto que viaja a uni_Productos
+        this.tipoProducto.uniclick.canal_c=$(".canalUniclick").val();
+
+        //Establece el objeto para guardar
+        this.model.set('account_uni_productos', this.tipoProducto);
+        this.context.attributes.model.attributes.no_viable=this.tipoProducto;
     }
 
     this._super();
