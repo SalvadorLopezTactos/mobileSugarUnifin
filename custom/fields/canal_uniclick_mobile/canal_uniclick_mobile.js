@@ -22,6 +22,7 @@ const CanalUniclickField = customization.extend(TextField, {
         app.api.call('GET', app.api.buildURL('GetDropdownList/canal_list'), null, {
                 success: _.bind(function (data) {
                     if (data) {
+                        delete data[""];
                         selfList.lista_canal=data;  
                     }
                     app.alert.dismiss('getlistaCanal');
