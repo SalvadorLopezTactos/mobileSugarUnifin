@@ -97,6 +97,15 @@ const AccountEditView = customization.extend(EditView, {
             this.model.on('sync', this.setPromotores, this);
 
     	}
+
+        //Nueva variable para guardar objeto con información de cuenta obtenida por servicio Scan de QR
+        // la info es pasada desde fileScanRFC.js
+        if(options.data.dataFromQR != undefined){
+            this.newAccount=options.data.dataFromQR;
+            this.setAccountFromQR(this.newAccount);
+        }
+        
+
         this.getListValues();
 
         this.model.on('change:name', this.cleanName, this);
@@ -124,6 +133,44 @@ const AccountEditView = customization.extend(EditView, {
         //Validación de duplicados
         this.model.addValidationTask('duplicate_check', _.bind(this.DuplicateCheck, this));
         
+    },
+
+    setAccountFromQR(newAccount){
+
+        this.model.set('primernombre_c',newAccount['Nombre']);
+        this.model.set('apellidopaterno_c',newAccount['Apellido Paterno']);
+        this.model.set('apellidomaterno_c',newAccount['Apellido Materno']);
+        var valorEdoNacimiento=this.searchEstado(newAccount['Entidad Federativa']);
+        this.model.set('estado_nacimiento_c',valorEdoNacimiento);
+        this.model.set('curp_c',newAccount['CURP']);
+        this.model.set('rfc_c',newAccount['RFC']);
+        if(newAccount['Fecha Nacimiento']!=""){
+            var fechaNac=newAccount['Fecha Nacimiento'];
+            //Formateando fecha a Y-m-d viene como d-m-Y
+            var fec=fechaNac.split('-');
+            this.model.set('fechadenacimiento_c',fec[2]+'-'+fec[1]+'-'+fec[0]);
+        }
+        if(newAccount['Correo electrónico'] !=""){
+            this.model.set('email', [{email_address: newAccount['Correo electrónico'], primary_address: true}]);  
+        }
+        
+    },
+
+    searchEstado(valorBuscado){
+        var paises_list=App.lang.getAppListStrings('estados_list');
+        if(valorBuscado=='CIUDAD DE MEXICO'){
+            valorBuscado='DISTRITO FEDERAL';
+        }
+        if(valorBuscado=='MEXICO'){
+            valorBuscado='ESTADO DE MEXICO';
+        }
+        var llave='';
+        for(var key in paises_list) {
+            if(paises_list[key] == valorBuscado) {
+                llave=key;
+            }
+        }
+        return llave;
     },
 
     /*Función generada para obtener los valores de las listas validacion_duplicados_list y validacion_simbolos_list a través de un api call
