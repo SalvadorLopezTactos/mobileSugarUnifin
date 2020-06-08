@@ -164,6 +164,9 @@ const AccountEditView = customization.extend(EditView, {
             /*ToDo: 'Entidad Federativa' campo sugar: zonageografica_c*/
 
         }else{//Sección para Persona Física o PFAE
+
+            this.model.set('tipodepersona_c','Persona Fisica');
+            
             if(newAccount['Nombre']!="" && newAccount['Nombre']!=undefined){
                 this.model.set('primernombre_c',newAccount['Nombre']);
             }
@@ -424,13 +427,13 @@ setUpdateValuesFromQR:function(){
             var nombre='';
             //Obtener los valores de los campos para Persona Moral
             if(valoresNuevos['Denominación o Razón Social']!= undefined){
+                var regimenFiscal=this.model.get('tipodepersona_c');
                 //Obtener valores actuales
                 var nombreComercial=this.model.get('nombre_comercial_c');
                 var razonSocial=this.model.get('razonsocial_c');
                 var email=this.model.get('email1');
                 var rfc=this.model.get('rfc_c');
                 var fechaInicio=this.model.get('fechaconstitutiva_c');
-
                 //Valores nuevos
                 var valoresParaActualizar={};
                 var nombreComercialNuevo=valoresNuevos['Denominación o Razón Social'];
@@ -438,33 +441,20 @@ setUpdateValuesFromQR:function(){
                 var emailNuevo=valoresNuevos['Correo electrónico'];
                 var rfcNuevo=valoresNuevos['RFC'];
                 var fechaInicioNuevo=valoresNuevos['Fecha de Inicio de operaciones'];
-
-                if(nombreComercial != nombreComercialNuevo && nombreComercialNuevo !=''){
-                    mensajeActualizar+='Nombre Comercial\n';
-                    mensajeActualizar+='Actual: '+nombreComercial+' - Nuevo: '+nombreComercialNuevo+'\n\n';
+                
+                if(regimenFiscal!='Persona Moral'){ //Diferente regimen fiscal- Actual tiene PF o PFAE y el nuevo es PM
+                    var mensajeActualizarDiferenteRegimen='El Régimen Fiscal es diferente al registro actual.\nSe actualizarán los siguientes campos:\n';
+                    mensajeActualizarDiferenteRegimen+='Nombre Comercial: '+nombreComercialNuevo+'\n';
                     valoresParaActualizar['Denominación o Razón Social']=nombreComercialNuevo;
-                }
-
-                if(email != emailNuevo && emailNuevo !=''){
-                    mensajeActualizar+='Correo electrónico\n';
-                    mensajeActualizar+='Actual: '+email+' - Nuevo: '+emailNuevo+'\n\n';
+                    mensajeActualizarDiferenteRegimen+='Razón Social: '+razonSocialNuevo+'\n';
+                    mensajeActualizarDiferenteRegimen+='Correo electrónico: '+emailNuevo+'\n';
                     valoresParaActualizar['Correo electrónico']=emailNuevo;
-                }
-
-                if(rfc != rfcNuevo && rfcNuevo !=''){
-                    mensajeActualizar+='RFC\n';
-                    mensajeActualizar+='Actual: '+rfc+' - Nuevo: '+rfcNuevo+'\n\n';
+                    mensajeActualizarDiferenteRegimen+='RFC: '+rfcNuevo+'\n';
                     valoresParaActualizar['RFC']=rfcNuevo;
-                }
-
-                if(fechaInicio != fechaInicioNuevo && fechaInicioNuevo !=''){
-                    mensajeActualizar+='Fecha constitutiva\n';
-                    mensajeActualizar+='Actual: '+fechaInicio+' - Nuevo: '+fechaInicioNuevo+'\n\n';
+                    mensajeActualizarDiferenteRegimen+='Fecha constitutiva: '+fechaInicioNuevo+'\n';
                     valoresParaActualizar['Fecha de Inicio de operaciones']=fechaInicioNuevo;
-                }
 
-                if(mensajeActualizar!='Se actualizarán los siguientes campos:\n'){
-                    dialog.showConfirm(mensajeActualizar+'\n¿Quiere proceder?', {
+                    dialog.showConfirm(mensajeActualizarDiferenteRegimen+'\n¿Desea proceder?', {
                         buttonLabels: ['Cancelar','Proceder'],
                         callback: function(index) {
                             if (index === 2) {//Aceptar
@@ -478,9 +468,50 @@ setUpdateValuesFromQR:function(){
                             }
                         }
                     });
-                }
+                }else{//Régimen Actual es PM y el nuevo es igual PM
+                    if(nombreComercial != nombreComercialNuevo && nombreComercialNuevo !=''){
+                        mensajeActualizar+='Nombre Comercial\n';
+                        mensajeActualizar+='Actual: '+nombreComercial+' - Nuevo: '+nombreComercialNuevo+'\n\n';
+                        valoresParaActualizar['Denominación o Razón Social']=nombreComercialNuevo;
+                    }
 
+                    if(email != emailNuevo && emailNuevo !=''){
+                        mensajeActualizar+='Correo electrónico\n';
+                        mensajeActualizar+='Actual: '+email+' - Nuevo: '+emailNuevo+'\n\n';
+                        valoresParaActualizar['Correo electrónico']=emailNuevo;
+                    }
+
+                    if(rfc != rfcNuevo && rfcNuevo !=''){
+                        mensajeActualizar+='RFC\n';
+                        mensajeActualizar+='Actual: '+rfc+' - Nuevo: '+rfcNuevo+'\n\n';
+                        valoresParaActualizar['RFC']=rfcNuevo;
+                    }
+
+                    if(fechaInicio != fechaInicioNuevo && fechaInicioNuevo !=''){
+                        mensajeActualizar+='Fecha constitutiva\n';
+                        mensajeActualizar+='Actual: '+fechaInicio+' - Nuevo: '+fechaInicioNuevo+'\n\n';
+                        valoresParaActualizar['Fecha de Inicio de operaciones']=fechaInicioNuevo;
+                    }
+
+                    if(mensajeActualizar!='Se actualizarán los siguientes campos:\n'){
+                        dialog.showConfirm(mensajeActualizar+'\n¿Desea proceder?', {
+                            buttonLabels: ['Cancelar','Proceder'],
+                            callback: function(index) {
+                                if (index === 2) {//Aceptar
+                                    self.setAccountFromQR(valoresParaActualizar);
+
+                                }else{//Cancelar
+                                    //Regresar a detalle en caso de no confirmar
+                                    app.controller.navigate({
+                                        url: 'Accounts/'+self.model.get('id')
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
             }else{//Valores para personas PF o PFAE
+                var regimenFiscal=this.model.get('tipodepersona_c');
 
                 //Obteniendo valores actuales
                 var nombre=this.model.get('primernombre_c');
@@ -492,6 +523,8 @@ setUpdateValuesFromQR:function(){
                 var email=this.model.get('email1');
                 var rfc=this.model.get('rfc_c');
 
+                var valoresParaActualizar={};
+
                 //Obteniendo valores del servicio
                 var nombreNuevo=valoresNuevos['Nombre'];
                 var paternoNuevo=valoresNuevos['Apellido Paterno'];
@@ -502,56 +535,24 @@ setUpdateValuesFromQR:function(){
                 var emailNuevo=valoresNuevos['Correo electrónico'];
                 var rfcNuevo=valoresNuevos['RFC'];
 
-                if(nombre != nombreNuevo && nombreNuevo !=''){
-                    mensajeActualizar+='Nombre\n';
-                    mensajeActualizar+='Actual: '+nombre+' - Nuevo: '+nombreNuevo+'\n\n';
+                if(regimenFiscal=='Persona Moral'){
+                    var mensajeActualizarDiferenteRegimen='El Régimen Fiscal es diferente al registro actual.\nSe actualizarán los siguientes campos:\n';
+                    mensajeActualizarDiferenteRegimen+='Nombre: '+nombreNuevo+'\n';
                     valoresParaActualizar['Nombre']=nombreNuevo;
-                }
-
-                if(paterno != paternoNuevo && paternoNuevo !=''){
-                    mensajeActualizar+='Apellido Paterno\n';
-                    mensajeActualizar+='Actual: '+paterno+' - Nuevo: '+paternoNuevo+'\n\n';
+                    mensajeActualizarDiferenteRegimen+='Apellido Paterno: '+paternoNuevo+'\n';
                     valoresParaActualizar['Apellido Paterno']=paternoNuevo;
-                }
-
-                if(materno != maternoNuevo && maternoNuevo !=''){
-                    mensajeActualizar+='Apellido Materno\n';
-                    mensajeActualizar+='Actual: '+materno+' - Nuevo: '+maternoNuevo+'\n\n';
+                    mensajeActualizarDiferenteRegimen+='Apellido Materno: '+maternoNuevo+'\n';
                     valoresParaActualizar['Apellido Materno']=maternoNuevo;
-                }
-
-                if(fechaNac != fechaNacNuevo && fechaNacNuevo !=''){
-                    mensajeActualizar+='Fecha de nacimiento\n';
-                    mensajeActualizar+='Actual: '+fechaNac+' - Nuevo: '+fechaNacNuevo+'\n\n';
+                    mensajeActualizarDiferenteRegimen+='Fecha de nacimiento: '+fechaNacNuevo+'\n';
                     valoresParaActualizar['Fecha Nacimiento']=fechaNacNuevo;
-                }
-
-                if(estadoNac != estadoNacNuevo && estadoNacNuevo !=''){
-                    mensajeActualizar+='Estado de nacimiento\n';
-                    mensajeActualizar+='Actual: '+estadoNac+' - Nuevo: '+estadoNacNuevo+'\n\n';
-                    valoresParaActualizar['Entidad Federativa']=estadoNacNuevo;
-                }
-
-                if(curp != curpNuevo && curpNuevo !=''){
-                    mensajeActualizar+='Curp\n';
-                    mensajeActualizar+='Actual: '+curp+' - Nuevo: '+curpNuevo+'\n\n';
+                    mensajeActualizarDiferenteRegimen+='CURP: '+curpNuevo+'\n';
                     valoresParaActualizar['CURP']=curpNuevo;
-                }
-
-                if(email != emailNuevo && emailNuevo !=''){
-                    mensajeActualizar+='Correo electrónico\n';
-                    mensajeActualizar+='Actual: '+email+' - Nuevo: '+emailNuevo+'\n\n';
+                    mensajeActualizarDiferenteRegimen+='Correo electrónico: '+emailNuevo+'\n';
                     valoresParaActualizar['Correo electrónico']=emailNuevo;
-                }
-
-                if(rfc != rfcNuevo && rfcNuevo !=''){
-                    mensajeActualizar+='RFC\n';
-                    mensajeActualizar+='Actual: '+rfc+' - Nuevo: '+rfcNuevo+'\n\n';
+                    mensajeActualizarDiferenteRegimen+='RFC: '+rfcNuevo+'\n';
                     valoresParaActualizar['RFC']=rfcNuevo;
-                }
 
-                if(mensajeActualizar!='Se actualizarán los siguientes campos:\n'){
-                    dialog.showConfirm(mensajeActualizar+'\n¿Quiere proceder?', {
+                    dialog.showConfirm(mensajeActualizarDiferenteRegimen+'\n¿Desea proceder?', {
                         buttonLabels: ['Cancelar','Proceder'],
                         callback: function(index) {
                             if (index === 2) {//Aceptar
@@ -565,6 +566,70 @@ setUpdateValuesFromQR:function(){
                             }
                         }
                     });
+                }else{//Registro actual y registro tiene mismo régimen fiscal PF o PFAE
+                    if(nombre != nombreNuevo && nombreNuevo !=''){
+                        mensajeActualizar+='Nombre\n';
+                        mensajeActualizar+='Actual: '+nombre+' - Nuevo: '+nombreNuevo+'\n\n';
+                        valoresParaActualizar['Nombre']=nombreNuevo;
+                    }
+
+                    if(paterno != paternoNuevo && paternoNuevo !=''){
+                        mensajeActualizar+='Apellido Paterno\n';
+                        mensajeActualizar+='Actual: '+paterno+' - Nuevo: '+paternoNuevo+'\n\n';
+                        valoresParaActualizar['Apellido Paterno']=paternoNuevo;
+                    }
+
+                    if(materno != maternoNuevo && maternoNuevo !=''){
+                        mensajeActualizar+='Apellido Materno\n';
+                        mensajeActualizar+='Actual: '+materno+' - Nuevo: '+maternoNuevo+'\n\n';
+                        valoresParaActualizar['Apellido Materno']=maternoNuevo;
+                    }
+
+                    if(fechaNac != fechaNacNuevo && fechaNacNuevo !=''){
+                        mensajeActualizar+='Fecha de nacimiento\n';
+                        mensajeActualizar+='Actual: '+fechaNac+' - Nuevo: '+fechaNacNuevo+'\n\n';
+                        valoresParaActualizar['Fecha Nacimiento']=fechaNacNuevo;
+                    }
+
+                    if(estadoNac != estadoNacNuevo && estadoNacNuevo !=''){
+                        mensajeActualizar+='Estado de nacimiento\n';
+                        mensajeActualizar+='Actual: '+estadoNac+' - Nuevo: '+estadoNacNuevo+'\n\n';
+                        valoresParaActualizar['Entidad Federativa']=estadoNacNuevo;
+                    }
+
+                    if(curp != curpNuevo && curpNuevo !=''){
+                        mensajeActualizar+='Curp\n';
+                        mensajeActualizar+='Actual: '+curp+' - Nuevo: '+curpNuevo+'\n\n';
+                        valoresParaActualizar['CURP']=curpNuevo;
+                    }
+
+                    if(email != emailNuevo && emailNuevo !=''){
+                        mensajeActualizar+='Correo electrónico\n';
+                        mensajeActualizar+='Actual: '+email+' - Nuevo: '+emailNuevo+'\n\n';
+                        valoresParaActualizar['Correo electrónico']=emailNuevo;
+                    }
+
+                    if(rfc != rfcNuevo && rfcNuevo !=''){
+                        mensajeActualizar+='RFC\n';
+                        mensajeActualizar+='Actual: '+rfc+' - Nuevo: '+rfcNuevo+'\n\n';
+                        valoresParaActualizar['RFC']=rfcNuevo;
+                    }
+
+                    if(mensajeActualizar!='Se actualizarán los siguientes campos:\n'){
+                        dialog.showConfirm(mensajeActualizar+'\n¿Quiere proceder?', {
+                            buttonLabels: ['Cancelar','Proceder'],
+                            callback: function(index) {
+                                if (index === 2) {//Aceptar
+                                    self.setAccountFromQR(valoresParaActualizar);
+                                }else{//Cancelar
+                                //Regresar a detalle en caso de no confirmar
+                                    app.controller.navigate({
+                                        url: 'Accounts/'+self.model.get('id')
+                                    });
+                                }
+                            }
+                        });
+                    }
                 }
             }   
         }
