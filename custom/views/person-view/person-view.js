@@ -21,9 +21,10 @@ const AccountEditView = customization.extend(EditView, {
 	initialize(options) {
 		this._super(options);
 
+        this.optionsFromQR=options;
+
         //Condición para conocer si se el registro es nuevo o ya ha sido creado
-        //if(this.model.get('id') == "" || this.model.get('id')==undefined){
-        	if(this.isCreate){
+        if(this.isCreate){
             //Creando registro  
             var strUrl = 'Users/' + this.model.get('assigned_user_id');
             self=this;
@@ -90,6 +91,15 @@ const AccountEditView = customization.extend(EditView, {
                         }, self)
             });
 
+            
+            //Nueva variable para guardar objeto con información de cuenta obtenida por servicio Scan de QR
+            // la info es pasada desde fileScanRFC.js
+            if(options.data !=undefined){
+                if(options.data.dataFromQR != undefined){
+                    this.newAccount=options.data.dataFromQR;
+                    this.setAccountFromQR(this.newAccount);
+                }
+            }
 
         }else{
         //Consultado registro
@@ -97,14 +107,6 @@ const AccountEditView = customization.extend(EditView, {
             this.model.on('sync', this.setPromotores, this);
 
     	}
-
-        //Nueva variable para guardar objeto con información de cuenta obtenida por servicio Scan de QR
-        // la info es pasada desde fileScanRFC.js
-        if(options.data.dataFromQR != undefined){
-            this.newAccount=options.data.dataFromQR;
-            this.setAccountFromQR(this.newAccount);
-        }
-        
 
         this.getListValues();
 
@@ -136,24 +138,67 @@ const AccountEditView = customization.extend(EditView, {
     },
 
     setAccountFromQR(newAccount){
+        //Comprobar si es Persona Moral
+        //Sección para QR de Persona Moral
+        if(newAccount['Denominación o Razón Social']!= undefined){
+            //Establecer tipo de Persona Moral
+            this.model.set('tipodepersona_c','Persona Moral');
+            this.model.set('razonsocial_c',newAccount['Denominación o Razón Social']);
+            this.model.set('nombre_comercial_c',newAccount['Denominación o Razón Social']);
 
-        this.model.set('primernombre_c',newAccount['Nombre']);
-        this.model.set('apellidopaterno_c',newAccount['Apellido Paterno']);
-        this.model.set('apellidomaterno_c',newAccount['Apellido Materno']);
-        var valorEdoNacimiento=this.searchEstado(newAccount['Entidad Federativa']);
-        this.model.set('estado_nacimiento_c',valorEdoNacimiento);
-        this.model.set('curp_c',newAccount['CURP']);
-        this.model.set('rfc_c',newAccount['RFC']);
-        if(newAccount['Fecha Nacimiento']!=""){
-            var fechaNac=newAccount['Fecha Nacimiento'];
-            //Formateando fecha a Y-m-d viene como d-m-Y
-            var fec=fechaNac.split('-');
-            this.model.set('fechadenacimiento_c',fec[2]+'-'+fec[1]+'-'+fec[0]);
+            if(newAccount['Correo electrónico'] !="" && newAccount['Correo electrónico'] !=undefined){
+                this.model.set('email', [{email_address: newAccount['Correo electrónico'], primary_address: true}]);  
+            }
+
+            if(newAccount['RFC']!="" && newAccount['RFC']!=undefined){
+                this.model.set('rfc_c',newAccount['RFC']);
+            }
+
+            if(newAccount['Fecha de Inicio de operaciones'] !="" && newAccount['Fecha de Inicio de operaciones'] !=undefined){
+                var fechaInicio=newAccount['Fecha de Inicio de operaciones'];
+                //Formateando fecha a Y-m-d viene como d-m-Y
+                var fec=fechaInicio.split('-');
+                this.model.set('fechaconstitutiva_c',fec[2]+'-'+fec[1]+'-'+fec[0]);
+            }
+
+            /*ToDo: 'Entidad Federativa' campo sugar: zonageografica_c*/
+
+        }else{//Sección para Persona Física o PFAE
+            if(newAccount['Nombre']!="" && newAccount['Nombre']!=undefined){
+                this.model.set('primernombre_c',newAccount['Nombre']);
+            }
+
+            if(newAccount['Apellido Paterno']!="" && newAccount['Apellido Paterno']!=undefined){
+                this.model.set('apellidopaterno_c',newAccount['Apellido Paterno']);
+            }
+            
+            if(newAccount['Apellido Materno']!="" && newAccount['Apellido Materno']!=undefined){
+                this.model.set('apellidomaterno_c',newAccount['Apellido Materno']);
+            }
+
+            if(newAccount['Entidad Federativa']!="" && newAccount['Entidad Federativa']!=undefined){
+                var valorEdoNacimiento=this.searchEstado(newAccount['Entidad Federativa']);
+                this.model.set('estado_nacimiento_c',valorEdoNacimiento);
+            }
+
+            if(newAccount['CURP']!="" && newAccount['CURP']!=undefined){
+                this.model.set('curp_c',newAccount['CURP']);
+            }
+            
+            if(newAccount['RFC']!="" && newAccount['RFC']!=undefined){
+                this.model.set('rfc_c',newAccount['RFC']);
+            }
+
+            if(newAccount['Fecha Nacimiento']!="" && newAccount['Fecha Nacimiento'] != undefined){
+                var fechaNac=newAccount['Fecha Nacimiento'];
+                //Formateando fecha a Y-m-d viene como d-m-Y
+                var fec=fechaNac.split('-');
+                this.model.set('fechadenacimiento_c',fec[2]+'-'+fec[1]+'-'+fec[0]);
+            }
+            if(newAccount['Correo electrónico'] !="" && newAccount['Correo electrónico'] !=undefined){
+                this.model.set('email', [{email_address: newAccount['Correo electrónico'], primary_address: true}]);  
+            }
         }
-        if(newAccount['Correo electrónico'] !=""){
-            this.model.set('email', [{email_address: newAccount['Correo electrónico'], primary_address: true}]);  
-        }
-        
     },
 
     searchEstado(valorBuscado){
@@ -361,6 +406,107 @@ blockRecordNoContactar:function(){
 
     //Se oculta el botón de eliminar
     $('.edit__footer').children().hide();
+
+    this.setUpdateValuesFromQR();
+},
+
+
+setUpdateValuesFromQR:function(){
+
+    if(this.optionsFromQR.data!=undefined){
+        if(this.optionsFromQR.data.vista!=undefined && this.optionsFromQR.data.vista=='edit'){
+            var mensajeActualizar='Se actualizarán los siguientes campos:\n';
+            //Obteniendo valores actuales
+            var nombre=this.model.get('primernombre_c');
+            var paterno=this.model.get('apellidopaterno_c');
+            var materno=this.model.get('apellidomaterno_c');
+            var fechaNac=this.model.get('fechadenacimiento_c');
+            var estadoNac=this.model.get('estado_nacimiento_c');
+            var curp=this.model.get('curp_c');
+            var email=this.model.get('email1');
+            var rfc=this.model.get('rfc_c');
+
+            //Obteniendo valores del servicio
+            var valoresNuevos=this.optionsFromQR.data.dataFromQR;
+            var valoresParaActualizar={};
+            var nombreNuevo=valoresNuevos['Nombre'];
+            var paternoNuevo=valoresNuevos['Apellido Paterno'];
+            var maternoNuevo=valoresNuevos['Apellido Materno'];
+            var fechaNacNuevo=valoresNuevos['Fecha Nacimiento'];
+            var estadoNacNuevo=valoresNuevos['Entidad Federativa'];
+            var curpNuevo=valoresNuevos['CURP'];
+            var emailNuevo=valoresNuevos['Correo electrónico'];
+            var rfcNuevo=valoresNuevos['RFC'];
+
+            if(nombre != nombreNuevo && nombreNuevo !=''){
+                mensajeActualizar+='Nombre\n';
+                mensajeActualizar+='Actual: '+nombre+' - Nuevo: '+nombreNuevo+'\n\n';
+                valoresParaActualizar['Nombre']=nombreNuevo;
+            }
+
+            if(paterno != paternoNuevo && paternoNuevo !=''){
+                mensajeActualizar+='Apellido Paterno\n';
+                mensajeActualizar+='Actual: '+paterno+' - Nuevo: '+paternoNuevo+'\n\n';
+                valoresParaActualizar['Apellido Paterno']=paternoNuevo;
+            }
+
+            if(materno != maternoNuevo && maternoNuevo !=''){
+                mensajeActualizar+='Apellido Materno\n';
+                mensajeActualizar+='Actual: '+materno+' - Nuevo: '+maternoNuevo+'\n\n';
+                valoresParaActualizar['Apellido Materno']=maternoNuevo;
+            }
+
+            if(fechaNac != fechaNacNuevo && fechaNacNuevo !=''){
+                mensajeActualizar+='Fecha de nacimiento\n';
+                mensajeActualizar+='Actual: '+fechaNac+' - Nuevo: '+fechaNacNuevo+'\n\n';
+                valoresParaActualizar['Fecha Nacimiento']=fechaNacNuevo;
+            }
+
+            if(estadoNac != estadoNacNuevo && estadoNacNuevo !=''){
+                mensajeActualizar+='Estado de nacimiento\n';
+                mensajeActualizar+='Actual: '+estadoNac+' - Nuevo: '+estadoNacNuevo+'\n\n';
+                valoresParaActualizar['Entidad Federativa']=estadoNacNuevo;
+            }
+
+            if(curp != curpNuevo && curpNuevo !=''){
+                mensajeActualizar+='Curp\n';
+                mensajeActualizar+='Actual: '+curp+' - Nuevo: '+curpNuevo+'\n\n';
+                valoresParaActualizar['CURP']=curpNuevo;
+            }
+
+            if(email != emailNuevo && emailNuevo !=''){
+                mensajeActualizar+='Correo electrónico\n';
+                mensajeActualizar+='Actual: '+email+' - Nuevo: '+emailNuevo+'\n\n';
+                valoresParaActualizar['Correo electrónico']=emailNuevo;
+            }
+
+            if(rfc != rfcNuevo && rfcNuevo !=''){
+                mensajeActualizar+='RFC\n';
+                mensajeActualizar+='Actual: '+rfc+' - Nuevo: '+rfcNuevo+'\n\n';
+                valoresParaActualizar['RFC']=rfcNuevo;
+            }
+
+            if(mensajeActualizar!='Se actualizarán los siguientes campos:\n'){
+                dialog.showConfirm(mensajeActualizar+'\n¿Quiere proceder?', {
+                    buttonLabels: ['Cancelar','Proceder'],
+                    callback: function(index) {
+                        if (index === 2) {//Aceptar
+                            self.setAccountFromQR(valoresParaActualizar);
+                             
+                        }else{//Cancelar
+                            //Regresar a detalle en caso de no confirmar
+                            app.controller.navigate({
+                                    url: 'Accounts/'+self.model.get('id')
+                                });
+                        }
+                    }
+                });
+            }
+
+        }
+
+    }
+
 },
 
 setLengthPhone:function(){

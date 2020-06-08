@@ -5,13 +5,42 @@ const device = require('%app.core%/device');
 const dialog = require('%app.core%/dialog');
 
 customization.registerMainMenuItem({
-    label: 'Scaneo de QR',
+    label: 'Crear Cuenta desde QR',
     iconKey: 'actions.barcode',
     rank: 0,
     route:'image_qr_rfc',
     isVisible() {
         //return app.isNative;
         return true;
+    },
+});
+
+customization.registerRecordAction({
+    name: 'scan_qr_main',
+    modules: ['Accounts'],
+    types: ['right-menu-detail'],
+    label: 'Actualizar Cuenta desde QR',
+    iconKey: 'actions.barcode',
+    rank: 1,
+
+    handler(view, model) {
+        //Mandar mensaje de cuenta no contactable y evitar cualquier acción
+        if(model.get('tct_no_contactar_chk_c')){
+            app.alert.show("cuentas_no_contactar", {
+                level: "error",
+                messages: "Cuenta No Contactable\nCualquier duda o aclaraci\u00F3n, favor de contactar al \u00E1rea de Administraci\u00F3n de cartera",
+                autoClose: false
+            });
+
+        }else{
+            app.controller.loadScreen({
+                view: ScanQRView,
+                data:{
+                    from:'detalle',
+                    idCuenta:model.get('id')
+                }
+            });
+        }
     },
 });
 
@@ -23,6 +52,10 @@ customization.registerRoutes([{
         app.controller.loadScreen({
             isDynamic: true,
             view: ScanQRView,
+            data:{
+                from:'creacion',
+                idCuenta:''
+            }
         });
     }   
 }]);
@@ -47,8 +80,10 @@ let ScanQRView = customization.extend(NomadView, {
     },
 
     initialize(options) {
+        this.desdeCualVista=options.data;
         self = this;
         this._super(options);
+
     },
 
     onAfterRender(){
@@ -97,24 +132,76 @@ let ScanQRView = customization.extend(NomadView, {
                             $('#send_request').removeClass('disabled');
                             $('#send_request').css('pointer-events','auto');
                         }else{
-
-                            app.alert.show('success_rfc', {
-                                level: 'success',
-                                messages: 'Información cargada correctamente',
-                                autoClose: true
-                                }
-                            );
-
-                            dialog.showAlert('Será redirigido a la creación de la Cuenta', {
-                                title: 'Información cargada correctamente',
-                                buttonLabels: 'Aceptar'
+                            var contextoQR=self;
+                            //Comprobar que el RFC no existe para poder crear o actualizar el registro
+                             app.alert.show('validando_duplicados', {
+                                level: 'load',
+                                messages: 'Cargando...'
                             });
+                             contextoQR.data=data;
 
-                            app.controller.navigate({
-                                url: 'Accounts/create',
-                                data:{
-                                    dataFromQR:data[0]
-                                }
+                             var urlCuentas= app.api.buildURL("Accounts/", null, null, {
+                                fields: "rfc_c",
+                                max_num: 5,
+                                "filter": [
+                                {"rfc_c": data[0]['RFC']}
+                                ]
+                            });
+                             app.api.call("read", urlCuentas , null, {
+                                success: _.bind(function (data) {
+                                    app.alert.dismiss('validando_duplicados');
+                                    //Se encontró que RFC ya se encuentra dado de alta
+                                    if (data.records.length > 0) {
+
+                                        dialog.showConfirm('EL RFC que se está intentando obtener ya se encuentra en el sistema\n¿Desea Consultarlo?', {
+                                            callback: function(index) {
+                                                if (index === 2) {//Aceptar
+                                                    app.controller.navigate({
+                                                        url: 'Accounts/'+data.records[0].id
+                                                    });  
+                                                }
+                                            }
+                                        });
+                                        
+                                    }else{
+                                        //No se encontró rfc, por lo tanto, el proceso sigue para crear o actualizar Cuenta
+                                        app.alert.show('success_rfc', {
+                                            level: 'success',
+                                            messages: 'Información cargada correctamente',
+                                            autoClose: true
+                                        }
+                                        );
+
+                                        if(self.desdeCualVista.from=='creacion'){
+                                            dialog.showAlert('Será redirigido a la creación de la Cuenta', {
+                                                title: 'Información cargada correctamente',
+                                                buttonLabels: 'Aceptar'
+                                            });
+
+                                            app.controller.navigate({
+                                                url: 'Accounts/create',
+                                                data:{
+                                                    dataFromQR:contextoQR.data[0]
+                                                }
+                                            });
+                                        }else{
+
+                                            dialog.showAlert('Será redirigido a la actualización de la Cuenta', {
+                                                title: 'Información cargada correctamente',
+                                                buttonLabels: 'Aceptar'
+                                            });
+
+                                            app.controller.navigate({
+                                                url: 'Accounts/'+self.desdeCualVista.idCuenta+'/edit',
+                                                data:{
+                                                    dataFromQR:contextoQR.data[0],
+                                                    vista:'edit'
+                                                }
+                                            });
+
+                                        }
+                                    }
+                                }, self)
                             });
                         }
                     }else{
