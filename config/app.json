@@ -30,7 +30,7 @@
             "ui": {
                 "icons": {
                     "actions": {
-                        "barcode": "icon icon-barcode",
+                        "barcode": "icon icon-qrcode",
                         "location": "icon icon-location-arrow",
                         "hello": "icon icon-smile-o"
                     }
