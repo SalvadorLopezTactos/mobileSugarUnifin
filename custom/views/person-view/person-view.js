@@ -443,31 +443,15 @@ setUpdateValuesFromQR:function(){
                 var fechaInicioNuevo=valoresNuevos['Fecha de Inicio de operaciones'];
                 
                 if(regimenFiscal!='Persona Moral'){ //Diferente regimen fiscal- Actual tiene PF o PFAE y el nuevo es PM
-                    var mensajeActualizarDiferenteRegimen='El Régimen Fiscal es diferente al registro actual.\nSe actualizarán los siguientes campos:\n';
-                    mensajeActualizarDiferenteRegimen+='Nombre Comercial: '+nombreComercialNuevo+'\n';
-                    valoresParaActualizar['Denominación o Razón Social']=nombreComercialNuevo;
-                    mensajeActualizarDiferenteRegimen+='Razón Social: '+razonSocialNuevo+'\n';
-                    mensajeActualizarDiferenteRegimen+='Correo electrónico: '+emailNuevo+'\n';
-                    valoresParaActualizar['Correo electrónico']=emailNuevo;
-                    mensajeActualizarDiferenteRegimen+='RFC: '+rfcNuevo+'\n';
-                    valoresParaActualizar['RFC']=rfcNuevo;
-                    mensajeActualizarDiferenteRegimen+='Fecha constitutiva: '+fechaInicioNuevo+'\n';
-                    valoresParaActualizar['Fecha de Inicio de operaciones']=fechaInicioNuevo;
-
-                    dialog.showConfirm(mensajeActualizarDiferenteRegimen+'\n¿Desea proceder?', {
-                        buttonLabels: ['Cancelar','Proceder'],
-                        callback: function(index) {
-                            if (index === 2) {//Aceptar
-                                self.setAccountFromQR(valoresParaActualizar);
-                                 
-                            }else{//Cancelar
-                                //Regresar a detalle en caso de no confirmar
-                                app.controller.navigate({
-                                        url: 'Accounts/'+self.model.get('id')
-                                    });
-                            }
-                        }
+                    var mensajeActualizarDiferenteRegimen='El Régimen Fiscal es diferente al registro actual.\nNo es posible actualizar\n';
+                    dialog.showAlert(mensajeActualizarDiferenteRegimen, {
+                        title: 'Información no válida',
+                                buttonLabels: 'Cerrar'
+                            });
+                    app.controller.navigate({
+                        url: 'Accounts/'+self.model.get('id')
                     });
+
                 }else{//Régimen Actual es PM y el nuevo es igual PM
                     if(nombreComercial != nombreComercialNuevo && nombreComercialNuevo !=''){
                         mensajeActualizar+='Nombre Comercial\n';
@@ -536,37 +520,15 @@ setUpdateValuesFromQR:function(){
                 var rfcNuevo=valoresNuevos['RFC'];
 
                 if(regimenFiscal=='Persona Moral'){
-                    var mensajeActualizarDiferenteRegimen='El Régimen Fiscal es diferente al registro actual.\nSe actualizarán los siguientes campos:\n';
-                    mensajeActualizarDiferenteRegimen+='Nombre: '+nombreNuevo+'\n';
-                    valoresParaActualizar['Nombre']=nombreNuevo;
-                    mensajeActualizarDiferenteRegimen+='Apellido Paterno: '+paternoNuevo+'\n';
-                    valoresParaActualizar['Apellido Paterno']=paternoNuevo;
-                    mensajeActualizarDiferenteRegimen+='Apellido Materno: '+maternoNuevo+'\n';
-                    valoresParaActualizar['Apellido Materno']=maternoNuevo;
-                    mensajeActualizarDiferenteRegimen+='Fecha de nacimiento: '+fechaNacNuevo+'\n';
-                    valoresParaActualizar['Fecha Nacimiento']=fechaNacNuevo;
-                    mensajeActualizarDiferenteRegimen+='CURP: '+curpNuevo+'\n';
-                    valoresParaActualizar['CURP']=curpNuevo;
-                    mensajeActualizarDiferenteRegimen+='Correo electrónico: '+emailNuevo+'\n';
-                    valoresParaActualizar['Correo electrónico']=emailNuevo;
-                    mensajeActualizarDiferenteRegimen+='RFC: '+rfcNuevo+'\n';
-                    valoresParaActualizar['RFC']=rfcNuevo;
-
-                    dialog.showConfirm(mensajeActualizarDiferenteRegimen+'\n¿Desea proceder?', {
-                        buttonLabels: ['Cancelar','Proceder'],
-                        callback: function(index) {
-                            if (index === 2) {//Aceptar
-                                self.setAccountFromQR(valoresParaActualizar);
-                                 
-                            }else{//Cancelar
-                                //Regresar a detalle en caso de no confirmar
-                                app.controller.navigate({
-                                        url: 'Accounts/'+self.model.get('id')
-                                    });
-                            }
-                        }
+                    var mensajeActualizarDiferenteRegimen='El Régimen Fiscal es diferente al registro actual.\nNo es posible actualizar\n';
+                    dialog.showAlert(mensajeActualizarDiferenteRegimen, {
+                        title: 'Información no válida',
+                                buttonLabels: 'Cerrar'
+                            });
+                    app.controller.navigate({
+                        url: 'Accounts/'+self.model.get('id')
                     });
-                }else{//Registro actual y registro tiene mismo régimen fiscal PF o PFAE
+                }else{//Registro actual y registro nuevo tiene mismo régimen fiscal PF o PFAE
                     if(nombre != nombreNuevo && nombreNuevo !=''){
                         mensajeActualizar+='Nombre\n';
                         mensajeActualizar+='Actual: '+nombre+' - Nuevo: '+nombreNuevo+'\n\n';
