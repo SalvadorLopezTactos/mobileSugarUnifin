@@ -67,7 +67,7 @@ let ScanQRView = customization.extend(NomadView, {
 
     // Configure the header
     headerConfig: {
-        title: 'Scaneo de RFC',
+        title: 'Escaneo de RFC',
         buttons: {
             mainMenu: true
         },
@@ -232,14 +232,14 @@ let ScanQRView = customization.extend(NomadView, {
                         app.alert.dismiss('getInfoRFC');
                         app.alert.show('error_rfc', {
                                     level: 'error',
-                                    messages: response.textStatus+'\nLa imagen es muy pesada, favor de elegir una nueva: ',
+                                    messages: response.textStatus+'\nSe superó el tiempo de espera, favor de intentar nuevamente',
                                     autoClose: true
                                     }
                             );
                         $('#send_request').removeClass('disabled');
                         $('#send_request').css('pointer-events','auto');
                     },self)
-                },{timeout:60000});
+                },{timeout:90000});
             }
         }
     },
