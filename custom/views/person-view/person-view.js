@@ -646,17 +646,17 @@ validatePhoneFormat:function(fields, errors, callback){
 },
 
 doValidateInfoReq:function(fields, errors, callback){
-
-    if (this.model.get('origendelprospecto_c') == 'Prospeccion propia') {
-            var metodoProspeccion = new String(this.model.get('metodo_prospeccion_c'));
-            if (metodoProspeccion.length == 0 || this.model.get('metodo_prospeccion_c') == null) {
+    // Prospeccion propia -> 3
+    if (this.model.get('origen_cuenta_c') == '3') {
+            var metodoProspeccion = new String(this.model.get('prospeccion_propia_c'));
+            if (metodoProspeccion.length == 0 || this.model.get('prospeccion_propia_c') == null) {
                 /*app.alert.show("Metodo de Prospeccion Requerido", {
                     level: "error",
                     title: "Debe indicar el metodo de prospecci\u00F3n",
                     autoClose: false
                 });*/
-                errors['metodo_prospeccion_c'] = errors['metodo_prospeccion_c'] || {};
-                errors['metodo_prospeccion_c'].required = true;
+                errors['prospeccion_propia_c'] = errors['prospeccion_propia_c'] || {};
+                errors['prospeccion_propia_c'].required = true;
             }
         }
         callback(null, fields, errors);
