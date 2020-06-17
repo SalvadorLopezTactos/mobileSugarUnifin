@@ -531,6 +531,7 @@ setUpdateValuesFromQR:function(){
                         url: 'Accounts/'+self.model.get('id')
                     });
                 }else{//Registro actual y registro nuevo tiene mismo régimen fiscal PF o PFAE
+                    valoresParaActualizar['Nombre']=nombre;
                     if(nombre != nombreNuevo && nombreNuevo !=''){
                         mensajeActualizar+='Nombre\n';
                         mensajeActualizar+='Actual: '+nombre+' - Nuevo: '+nombreNuevo+'\n\n';
@@ -585,6 +586,7 @@ setUpdateValuesFromQR:function(){
                             callback: function(index) {
                                 if (index === 2) {//Aceptar
                                     self.setAccountFromQR(valoresParaActualizar);
+                                    self.optionsFromQR.data.vista=undefined;
                                 }else{//Cancelar
                                 //Regresar a detalle en caso de no confirmar
                                     app.controller.navigate({
