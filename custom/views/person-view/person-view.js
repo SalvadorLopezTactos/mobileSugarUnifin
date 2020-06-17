@@ -453,6 +453,7 @@ setUpdateValuesFromQR:function(){
                     });
 
                 }else{//Régimen Actual es PM y el nuevo es igual PM
+                    valoresParaActualizar['Denominación o Razón Social']=nombreComercial;
                     if(nombreComercial != nombreComercialNuevo && nombreComercialNuevo !=''){
                         mensajeActualizar+='Nombre Comercial\n';
                         mensajeActualizar+='Actual: '+nombreComercial+' - Nuevo: '+nombreComercialNuevo+'\n\n';
@@ -483,6 +484,7 @@ setUpdateValuesFromQR:function(){
                             callback: function(index) {
                                 if (index === 2) {//Aceptar
                                     self.setAccountFromQR(valoresParaActualizar);
+                                    self.optionsFromQR.data.vista=undefined;
 
                                 }else{//Cancelar
                                     //Regresar a detalle en caso de no confirmar
