@@ -128,6 +128,12 @@ const AccountEditView = customization.extend(EditView, {
         this.model.addValidationTask('check_TextOnly', _.bind(this.checkTextOnly, this));
 
         this.model.addValidationTask('validateCanalUniclick', _.bind(this.validateCanalUniclick, this));
+        /*RFC_ValidatePadron
+          Validación de rfc en el padron de contribuyentes
+        */
+        self.rfc_antiguo = "";
+        this.model.on('change:rfc_c', this.cambioRFC, this);
+        this.model.addValidationTask('RFC_validateP', _.bind(this.RFC_ValidatePadron, this));
         
         //validación para mostrar en texto el nombre de los campos requeridos
         this.model.addValidationTask('valida_requeridos',_.bind(this.valida_requeridos, this));
@@ -734,6 +740,89 @@ validateCanalUniclick(fields, errors, callback){
             dialog.showAlert('Hace falta seleccionar algún canal para el producto Uniclick');
         }
 },
+
+cambioRFC(){
+        var original_rfc = this.model._previousAttributes.rfc_c;
+        this._set_rfc_antiguo(original_rfc);
+},
+
+_get_rfc_antiguo(){
+        return self.rfc_antiguo;
+},
+
+_set_rfc_antiguo(rfca){
+        self.rfc_antiguo = rfca;
+},
+
+RFC_ValidatePadron(fields, errors, callback) {
+
+        var rfc = this.getField('rfc_c');
+        var valuerfc = this.model.get('rfc_c');
+        var anticrfc = this._get_rfc_antiguo();
+
+        if( (!_.isEmpty(valuerfc) || valuerfc != "" && valuerfc != "undefined")
+            && (anticrfc != valuerfc) 
+            && (rfc.action === "edit" || rfc.action === "create")
+            && ( this.model.get('estado_rfc_c') == null || this.model.get('estado_rfc_c') == "" )){
+            app.alert.show('getValidationRFC', {
+                level: 'load',
+                closeable: false,
+                messages: 'Validando RFC...',
+            });
+            var url=app.api.buildURL('GetRFCValido?rfc='+valuerfc);
+            app.api.call('GET', url,null, {
+                success: _.bind(function (data) {
+                    app.alert.dismiss('getValidationRFC');
+                    if (data != "" && data != null) {
+                        if (data.code == '1') {
+                            this.model.set('estado_rfc_c', "");
+                            app.alert.show("Error Validar RFC", {
+                                level: "error",
+                                title: 'Estructura del RFC incorrecta',
+                                autoClose: false
+                            });
+                            errors['error_RFC_Padron'] = errors['error_RFC_Padron'] || {};
+                            errors['error_RFC_Padron'].required = true;
+                        }else if (data.code == '2') {
+                            this.model.set('estado_rfc_c', '0');
+                            app.alert.show("Error Validar RFC", {
+                                level: "error",
+                                title: 'RFC no registrado en el padrón de contribuyentes',
+                                autoClose: false
+                            });
+                            errors['error_RFC_Padron'] = errors['error_RFC_Padron'] || {};
+                            errors['error_RFC_Padron'].required = true;
+                        }else{
+                            this.model.set('estado_rfc_c', '1');
+                        }                     
+                    }else{
+                        app.alert.show("Error Validar RFC", {
+                            level: "error",
+                            title: 'Error de envío para validar RFC',
+                            autoClose: false
+                        });
+                        errors['error_RFC_Padron'] = errors['error_RFC_Padron'] || {};
+                        errors['error_RFC_Padron'].required = true;
+                    }       
+                    callback(null, fields, errors);                 
+                }, this),
+                error: _.bind(function (error) {
+                    app.alert.dismiss('getValidationRFC');
+                    app.alert.show("Error Validar RFC", {
+                        level: "error",
+                        title: 'Error de envío',
+                        autoClose: false
+                    });
+                    errors['error_RFC_Padron'] = errors['error_RFC_Padron'] || {};
+                    errors['error_RFC_Padron'].required = true;
+                    callback(null, fields, errors);
+                },this),
+            },{timeout:60000});
+        }else{
+              callback(null, fields, errors);
+        }           
+},
+
 
 valida_requeridos: function(fields, errors, callback) {
         var campos = "";
