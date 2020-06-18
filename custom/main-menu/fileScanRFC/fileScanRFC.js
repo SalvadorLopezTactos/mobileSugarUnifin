@@ -80,6 +80,8 @@ let ScanQRView = customization.extend(NomadView, {
         'change #file_rfc':'setImagePreview'
     },
 
+    flagGaleria:null,
+
     initialize(options) {
         this.desdeCualVista=options.data;
         self = this;
@@ -107,7 +109,12 @@ let ScanQRView = customization.extend(NomadView, {
         $('#send_request').css('pointer-events','none');
 
         var imagen=document.getElementById('imageRFC_QR');
-        var imagenBase64=self.getBase64Image(imagen);
+        var imagenBase64='';
+        if(self.flagGaleria==1){
+            imagenBase64=imagen.src;
+        }else{
+            imagenBase64=self.getBase64Image(imagen);
+        } 
         var body={
             "file":imagenBase64
             }
@@ -161,6 +168,10 @@ let ScanQRView = customization.extend(NomadView, {
                                                 app.controller.navigate({
                                                     url: 'Accounts/'+data.records[0].id
                                                 });  
+                                            }else{
+                                                //Habilitando botón para seleccionar qr
+                                                $('#boton').removeClass('disabled');
+                                                $('#boton').css('pointer-events','auto');
                                             }
                                         }
                                     });
@@ -346,14 +357,54 @@ let ScanQRView = customization.extend(NomadView, {
         );
 
         function onSuccess(imageURL) {
-            var image = document.getElementById('imageRFC_QR');
-            image.src = imageURL;
+            //var image = document.getElementById('imageRFC_QR');
+            //image.src = imageURL;
+            self.flagGaleria=1;
+            window.resolveLocalFileSystemURL(imageURL, 
+                function(fileEntry){
+                    //alert("got image file entry: " + fileEntry.fullPath);
+                    fileEntry.file( 
+                        function(file) {
+                            let reader = new FileReader();
+                            reader.onload = function(e) {
+                                $('#imageRFC_QR').attr('src', e.target.result);
+                            };
+
+                            reader.onerror = function() {
+                                
+                            }
+
+                            reader.readAsDataURL(file);
+                        },
+                        function(error){
+                            console.log(error);
+
+                        });
+                },
+                function(){//error
+
+                }
+            );
+
             $('#send_request').removeClass('disabled');
             $('#send_request').css('pointer-events','auto');
         }
 
         function onFail(message) {
+            self.flagGaleria=0;
             alert('Failed because: ' + message);
+        }
+    },
+
+    readImageFromGallery(src) {
+        if(src != null && src !=''){
+            var file = new File(src, 'unnombre.png');
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function (e) {
+                $('#imageRFC_QR').attr('src', e.target.result);
+            }    
+        
         }
     },
 
