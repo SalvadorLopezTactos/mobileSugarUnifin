@@ -281,7 +281,7 @@ let ScanQRView = customization.extend(NomadView, {
     },
 
     abrirDialogoSeleccion(){
-        var msj = "¿De donde desea obtener la imagen para escanear?";
+        var msj = "¿De dónde desea obtener la imagen para escanear?";
         var titulo = "Escaner de RFC";
         var buttonLabels = "Obtener de Galería,Obtener de cámara";
         navigator.notification.confirm(msj, confirmCallback, titulo, buttonLabels);
@@ -392,7 +392,7 @@ let ScanQRView = customization.extend(NomadView, {
 
         function onFail(message) {
             self.flagGaleria=0;
-            alert('Failed because: ' + message);
+            //alert('Failed because: ' + message);
         }
     },
 
