@@ -757,13 +757,13 @@ _set_rfc_antiguo(rfca){
 RFC_ValidatePadron(fields, errors, callback) {
 
         var rfc = this.getField('rfc_c');
+        var estado_rfc=this.model.get('estado_rfc_c');
         var valuerfc = this.model.get('rfc_c');
         var anticrfc = this._get_rfc_antiguo();
 
-        if( (!_.isEmpty(valuerfc) || valuerfc != "" && valuerfc != "undefined")
-            && (anticrfc != valuerfc) 
-            && (rfc.action === "edit" || rfc.action === "create")
-            && ( this.model.get('estado_rfc_c') == null || this.model.get('estado_rfc_c') == "" )){
+        if(valuerfc != anticrfc && (estado_rfc==undefined || estado_rfc ==null || estado_rfc =="" || estado_rfc ==0 ) && valuerfc != "" && valuerfc!= undefined && this.isCreate||
+            (estado_rfc==undefined || estado_rfc ==null || estado_rfc =="" || estado_rfc ==0 ) && valuerfc != "" && valuerfc!= undefined && !this.isCreate ||
+            (valuerfc != anticrfc && valuerfc !="" && valuerfc != undefined && !this.isCreate && estado_rfc=='1')){
             app.alert.show('getValidationRFC', {
                 level: 'load',
                 closeable: false,
@@ -775,32 +775,35 @@ RFC_ValidatePadron(fields, errors, callback) {
                     app.alert.dismiss('getValidationRFC');
                     if (data != "" && data != null) {
                         if (data.code == '1') {
-                            this.model.set('estado_rfc_c', "");
+                            self.model.set('estado_rfc_c', "");
                             app.alert.show("Error Validar RFC", {
                                 level: "error",
                                 title: 'Estructura del RFC incorrecta',
                                 autoClose: false
                             });
-                            errors['error_RFC_Padron'] = errors['error_RFC_Padron'] || {};
-                            errors['error_RFC_Padron'].required = true;
+                            dialog.showAlert('Estructura del RFC incorrecta\n');
+                            errors['rfc_c'] = errors['rfc_c'] || {};
+                            errors['rfc_c'].required = true;
                         }else if (data.code == '2') {
-                            this.model.set('estado_rfc_c', '0');
+                            self.model.set('estado_rfc_c', '0');
                             app.alert.show("Error Validar RFC", {
                                 level: "error",
                                 title: 'RFC no registrado en el padrón de contribuyentes',
                                 autoClose: false
                             });
-                            errors['error_RFC_Padron'] = errors['error_RFC_Padron'] || {};
-                            errors['error_RFC_Padron'].required = true;
+                            dialog.showAlert('RFC no registrado en el padrón de contribuyentes\n');
+                            errors['rfc_c'] = errors['rfc_c'] || {};
+                            errors['rfc_c'].required = true;
                         }else if (data.code == '4') {
-                            this.model.set('estado_rfc_c', '1')
+                            self.model.set('estado_rfc_c', '1')
                         }                     
                     }else{
                         app.alert.show("Error Validar RFC", {
                             level: "error",
-                            title: 'Error de envío para validar RFC',
+                            title: 'Error de envío para validar RFC\nServicio no disponible\nFavor de intentar nuevamente',
                             autoClose: false
                         });
+                        dialog.showAlert('Error de envío para validar RFC\nServicio no disponible\nFavor de intentar nuevamente');
                         errors['error_RFC_Padron'] = errors['error_RFC_Padron'] || {};
                         errors['error_RFC_Padron'].required = true;
                     }       
@@ -813,8 +816,9 @@ RFC_ValidatePadron(fields, errors, callback) {
                         title: 'Error de envío',
                         autoClose: false
                     });
-                    errors['error_RFC_Padron'] = errors['error_RFC_Padron'] || {};
-                    errors['error_RFC_Padron'].required = true;
+                    dialog.showAlert('Error de envío para validar RFC\n');
+                    errors['rfc_c'] = errors['rfc_c'] || {};
+                    errors['rfc_c'].required = true;
                     callback(null, fields, errors);
                 },this),
             },{timeout:60000});
