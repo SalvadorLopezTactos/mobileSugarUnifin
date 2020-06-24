@@ -131,6 +131,7 @@ const AccountEditView = customization.extend(EditView, {
         /*RFC_ValidatePadron
           Validación de rfc en el padron de contribuyentes
         */
+        /*
         self.rfc_antiguo = "";
         this.model.on('change:rfc_c', this.cambioRFC, this);
         if(this.isCreate){
@@ -138,6 +139,7 @@ const AccountEditView = customization.extend(EditView, {
         }else{
             this.model.addValidationTask('RFC_validateP', _.bind(this.RFC_ValidatePadron, this));
         }
+        */
         
         //validación para mostrar en texto el nombre de los campos requeridos
         this.model.addValidationTask('valida_requeridos',_.bind(this.valida_requeridos, this));
