@@ -133,7 +133,11 @@ const AccountEditView = customization.extend(EditView, {
         */
         self.rfc_antiguo = "";
         this.model.on('change:rfc_c', this.cambioRFC, this);
-        this.model.addValidationTask('RFC_validateP', _.bind(this.RFC_ValidatePadron, this));
+        if(this.isCreate){
+            this.model.addValidationTask('RFC_validateP', _.bind(this.RFC_ValidatePadronCreacion, this));
+        }else{
+            this.model.addValidationTask('RFC_validateP', _.bind(this.RFC_ValidatePadron, this));
+        }
         
         //validación para mostrar en texto el nombre de los campos requeridos
         this.model.addValidationTask('valida_requeridos',_.bind(this.valida_requeridos, this));
@@ -755,15 +759,127 @@ _set_rfc_antiguo(rfca){
 },
 
 RFC_ValidatePadron(fields, errors, callback) {
+        const contextoRFC = this;
 
+        app.alert.show('obteniendoEstadoRFC', {
+                level: 'process',
+                messages: 'Cargando...'
+            });
+
+        var urlgetEstadoRFC= app.api.buildURL("Accounts/", null, null, {
+                            fields: "rfc_c,estado_rfc_c",
+                            max_num: 1,
+                            "filter": [
+                                {"id": this.model.get('id')}
+                            ]
+                        });
+
+        app.api.call('GET', urlgetEstadoRFC, null, {
+                success: _.bind(function (data) {
+                    app.alert.dismiss('obteniendoEstadoRFC');
+                    if (data.records.length > 0) {
+                        var rfc = this.getField('rfc_c');
+                        //Se agrega país para omitir validación de RFC cuando el registro no sea de México
+                        //this.model.set('estado_rfc_c','5',{silent: true});
+                        var pais=self.model.get('pais_nacimiento_c');
+                        var estado_rfc=data.records[0].estado_rfc_c;
+                        var valuerfc = self.model.get('rfc_c');
+                        var anticrfc = self._get_rfc_antiguo();
+
+                        if(valuerfc != anticrfc && (estado_rfc==undefined || estado_rfc ==null || estado_rfc =="" || estado_rfc ==0 ) && valuerfc != "" && valuerfc!= undefined && pais=="2" && this.isCreate||
+                            (estado_rfc==undefined || estado_rfc ==null || estado_rfc =="" || estado_rfc ==0 ) && valuerfc != "" && valuerfc!= undefined && pais=="2" && !this.isCreate ||
+                            (valuerfc != anticrfc && valuerfc !="" && valuerfc != undefined && !this.isCreate && estado_rfc=='1' && pais=="2")){
+                            app.alert.show('getValidationRFC', {
+                                level: 'load',
+                                closeable: false,
+                                messages: 'Validando RFC...',
+                            });
+                            var url=app.api.buildURL('GetRFCValido?rfc='+valuerfc);
+                            app.api.call('GET', url,null, {
+                                success: function (data) {
+                                    app.alert.dismiss('getValidationRFC');
+                                    if (data != "" && data != null) {
+                                       if(data.code == '1') {
+                                        self.model.set('estado_rfc_c', "");
+                                        self.model.attributes.estado_rfc_c="";
+                                        app.alert.show("Error Validar RFC", {
+                                                level: "error",
+                                                title: 'Estructura del RFC incorrecta',
+                                                autoClose: false
+                                        });
+                                        dialog.showAlert('Estructura del RFC incorrecta\n');
+                                        errors['rfc_c'] = errors['rfc_c'] || {};
+                                        errors['rfc_c'].required = true;
+
+                                        }else if (data.code == '2') {
+                                            self.model.set('estado_rfc_c', '0');
+                                            self.model.attributes.estado_rfc_c='0';
+                                            app.alert.show("Error Validar RFC", {
+                                                level: "error",
+                                                title: 'RFC no registrado en el padrón de contribuyentes',
+                                                autoClose: false
+                                            });
+                                            dialog.showAlert('RFC no registrado en el padrón de contribuyentes\n');
+                                            errors['rfc_c'] = errors['rfc_c'] || {};
+                                            errors['rfc_c'].required = true;
+                                        }else if(data.code == '3'){//RFC válido, pero no es susceptible a recibir facturas
+                                            self.model.set('estado_rfc_c', '1');
+                                            //contextoRFC.model.set('estado_rfc_c', '1');
+                                            //contextoRFC.context.attributes.model.attributes.estado_rfc_c='1';
+                                        
+                                        }else if (data.code == '4') {
+                                            self.model.set('estado_rfc_c', '1');
+                                        }                     
+                                    }else{
+                                        app.alert.show("Error Validar RFC", {
+                                            level: "error",
+                                            title: 'Error de envío para validar RFC\nServicio no disponible\nFavor de intentar nuevamente',
+                                            autoClose: false
+                                        });
+
+                                        dialog.showAlert('Error de envío para validar RFC\nServicio no disponible\nFavor de intentar nuevamente');
+                                        errors['error_RFC_Padron'] = errors['error_RFC_Padron'] || {};
+                                        errors['error_RFC_Padron'].required = true;
+                                    }
+                                    callback(null, fields, errors);                 
+                                },
+                                error: function (error) {
+                                    app.alert.dismiss('getValidationRFC');
+                                    app.alert.show("Error Validar RFC", {
+                                        level: "error",
+                                        title: 'Error de envío',
+                                        autoClose: false
+                                    });
+
+                                    dialog.showAlert('Error de envío para validar RFC\n');
+                                    errors['rfc_c'] = errors['rfc_c'] || {};
+                                    errors['rfc_c'].required = true;
+                                    callback(null, fields, errors);
+                                },
+                            },{timeout:60000});
+        
+                        }else{
+                            callback(null, fields, errors);
+                        }
+                    }
+            }, self),
+        });//Fin api call para obtener estado_Rfc
+                   
+},
+
+RFC_ValidatePadronCreacion(fields, errors, callback){
+    if(self.model.get('rfc_c')!=undefined && self.model.get('rfc_c') !=""){
         var rfc = this.getField('rfc_c');
-        var estado_rfc=this.model.get('estado_rfc_c');
-        var valuerfc = this.model.get('rfc_c');
-        var anticrfc = this._get_rfc_antiguo();
+        //Se agrega país para omitir validación de RFC cuando el registro no sea de México
+         //this.model.set('estado_rfc_c','5',{silent: true});
+         var pais=self.model.get('pais_nacimiento_c');
+         var estado_rfc=self.model.get('estado_rfc_c');
+         var valuerfc = self.model.get('rfc_c');
+         var anticrfc = self._get_rfc_antiguo();
 
-        if(valuerfc != anticrfc && (estado_rfc==undefined || estado_rfc ==null || estado_rfc =="" || estado_rfc ==0 ) && valuerfc != "" && valuerfc!= undefined && this.isCreate||
-            (estado_rfc==undefined || estado_rfc ==null || estado_rfc =="" || estado_rfc ==0 ) && valuerfc != "" && valuerfc!= undefined && !this.isCreate ||
-            (valuerfc != anticrfc && valuerfc !="" && valuerfc != undefined && !this.isCreate && estado_rfc=='1')){
+         if(valuerfc != anticrfc && (estado_rfc==undefined || estado_rfc ==null || estado_rfc =="" || estado_rfc ==0 ) && valuerfc != "" && valuerfc!= undefined && pais=="2" && this.isCreate||
+            (estado_rfc==undefined || estado_rfc ==null || estado_rfc =="" || estado_rfc ==0 ) && valuerfc != "" && valuerfc!= undefined && pais=="2" && !this.isCreate ||
+            (valuerfc != anticrfc && valuerfc !="" && valuerfc != undefined && !this.isCreate && estado_rfc=='1' && pais=="2")){
             app.alert.show('getValidationRFC', {
                 level: 'load',
                 closeable: false,
@@ -771,11 +887,12 @@ RFC_ValidatePadron(fields, errors, callback) {
             });
             var url=app.api.buildURL('GetRFCValido?rfc='+valuerfc);
             app.api.call('GET', url,null, {
-                success: _.bind(function (data) {
+                success: function (data) {
                     app.alert.dismiss('getValidationRFC');
                     if (data != "" && data != null) {
-                        if (data.code == '1') {
+                        if(data.code == '1') {
                             self.model.set('estado_rfc_c', "");
+                            self.model.attributes.estado_rfc_c="";
                             app.alert.show("Error Validar RFC", {
                                 level: "error",
                                 title: 'Estructura del RFC incorrecta',
@@ -784,8 +901,10 @@ RFC_ValidatePadron(fields, errors, callback) {
                             dialog.showAlert('Estructura del RFC incorrecta\n');
                             errors['rfc_c'] = errors['rfc_c'] || {};
                             errors['rfc_c'].required = true;
+
                         }else if (data.code == '2') {
                             self.model.set('estado_rfc_c', '0');
+                            self.model.attributes.estado_rfc_c='0';
                             app.alert.show("Error Validar RFC", {
                                 level: "error",
                                 title: 'RFC no registrado en el padrón de contribuyentes',
@@ -794,8 +913,13 @@ RFC_ValidatePadron(fields, errors, callback) {
                             dialog.showAlert('RFC no registrado en el padrón de contribuyentes\n');
                             errors['rfc_c'] = errors['rfc_c'] || {};
                             errors['rfc_c'].required = true;
+                        
+                        }else if(data.code == '3'){//RFC válido, pero no es susceptible a recibir facturas
+                            
+                            self.model.set('estado_rfc_c', '1');
+                        
                         }else if (data.code == '4') {
-                            self.model.set('estado_rfc_c', '1')
+                            self.model.set('estado_rfc_c', '1');
                         }                     
                     }else{
                         app.alert.show("Error Validar RFC", {
@@ -806,27 +930,30 @@ RFC_ValidatePadron(fields, errors, callback) {
                         dialog.showAlert('Error de envío para validar RFC\nServicio no disponible\nFavor de intentar nuevamente');
                         errors['error_RFC_Padron'] = errors['error_RFC_Padron'] || {};
                         errors['error_RFC_Padron'].required = true;
-                    }       
+                    }
                     callback(null, fields, errors);                 
-                }, this),
-                error: _.bind(function (error) {
+                },
+                error: function (error) {
                     app.alert.dismiss('getValidationRFC');
                     app.alert.show("Error Validar RFC", {
                         level: "error",
                         title: 'Error de envío',
                         autoClose: false
                     });
+
                     dialog.showAlert('Error de envío para validar RFC\n');
                     errors['rfc_c'] = errors['rfc_c'] || {};
                     errors['rfc_c'].required = true;
                     callback(null, fields, errors);
-                },this),
-            },{timeout:60000});
+                },
+            },{timeout:60000});            
         }else{
-              callback(null, fields, errors);
-        }           
+            callback(null, fields, errors);
+        }
+    }else{
+        callback(null, fields, errors); 
+    }
 },
-
 
 valida_requeridos: function(fields, errors, callback) {
         var campos = "";
@@ -1166,6 +1293,9 @@ onHeaderSaveClick() {
         this.model.set('account_uni_productos', this.tipoProducto);
         this.context.attributes.model.attributes.no_viable=this.tipoProducto;
     }
+
+    this.model.set('estado_rfc_c','0');
+
 
     this._super();
 },
