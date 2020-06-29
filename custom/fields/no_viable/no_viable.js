@@ -75,6 +75,7 @@ const NoViableField = customization.extend(TextField, {
                         selfListas.razones_cf_list = data['razones_cf_list'];
                         selfListas.tct_razon_ni_l_ddw_c_list =data['tct_razon_ni_l_ddw_c_list']; 
                     }
+                    selfListas.render();
                     app.alert.dismiss('getlists');
                 }, self),
             });

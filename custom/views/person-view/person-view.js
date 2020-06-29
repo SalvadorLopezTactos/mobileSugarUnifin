@@ -72,7 +72,8 @@ const AccountEditView = customization.extend(EditView, {
                             }
 
                             //if(contains.call(modelo.get('productos_c'), "1")==false && contains.call(modelo.get('productos_c'), "3") == false && contains.call(modelo.get('productos_c'), "4") == false){
-                            	if(productos.indexOf("1") == -1 && productos.indexOf("3") == -1 && productos.indexOf("4") == -1){
+                            	/*
+                                if(productos.indexOf("1") == -1 && productos.indexOf("3") == -1 && productos.indexOf("4") == -1){
                             		self.model.set('promotorleasing_c','9 - Sin Gestor');
                             		self.model.set('user_id_c','569246c7-da62-4664-ef2a-5628f649537e');
                                     self.model.set('promotorfactoraje_c', '9 - Sin Gestor');
@@ -85,6 +86,7 @@ const AccountEditView = customization.extend(EditView, {
                                     self.model.set('promotoruniclick_c','9 - Sin Gestor');
                                     self.model.set('user_id7_c','569246c7-da62-4664-ef2a-5628f649537e');
                             	}
+                                */
                             }
                             self._hideGuardar(modelo);
 
@@ -294,6 +296,9 @@ const AccountEditView = customization.extend(EditView, {
 
         //Se establece vacío el campo Macrosector tal y como se tiene en versión Web
         $('select[name="tct_macro_sector_ddw_c"]').val('');
+
+        //Se dispara manualmente evento change para evitar error de requerido en campo de origen
+        $('select[name="origen_cuenta_c"]').trigger('change');
 
         if (App.user.attributes.deudor_factoraje_c != true) {
             //Readonly check factoraje
