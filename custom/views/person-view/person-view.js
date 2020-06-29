@@ -173,6 +173,8 @@ const AccountEditView = customization.extend(EditView, {
                 this.model.set('fechaconstitutiva_c',fec[2]+'-'+fec[1]+'-'+fec[0]);
             }
 
+            this.model.set('path_img_qr_c',newAccount['path_img_qr']);
+
             /*ToDo: 'Entidad Federativa' campo sugar: zonageografica_c*/
 
         }else{//Sección para Persona Física o PFAE
@@ -213,6 +215,8 @@ const AccountEditView = customization.extend(EditView, {
             if(newAccount['Correo electrónico'] !="" && newAccount['Correo electrónico'] !=undefined){
                 this.model.set('email', [{email_address: newAccount['Correo electrónico'], primary_address: true}]);  
             }
+
+            this.model.set('path_img_qr_c',newAccount['path_img_qr']);
         }
     },
 
@@ -453,6 +457,8 @@ setUpdateValuesFromQR:function(){
                 var emailNuevo=valoresNuevos['Correo electrónico'];
                 var rfcNuevo=valoresNuevos['RFC'];
                 var fechaInicioNuevo=valoresNuevos['Fecha de Inicio de operaciones'];
+
+                var path_img_qr=valoresNuevos['path_img_qr'];
                 
                 if(regimenFiscal!='Persona Moral'){ //Diferente regimen fiscal- Actual tiene PF o PFAE y el nuevo es PM
                     var mensajeActualizarDiferenteRegimen='El Régimen Fiscal es diferente al registro actual.\nNo es posible actualizar\n';
@@ -489,6 +495,8 @@ setUpdateValuesFromQR:function(){
                         mensajeActualizar+='Actual: '+fechaInicio+' - Nuevo: '+fechaInicioNuevo+'\n\n';
                         valoresParaActualizar['Fecha de Inicio de operaciones']=fechaInicioNuevo;
                     }
+
+                    valoresParaActualizar['path_img_qr']=path_img_qr;
 
                     if(mensajeActualizar!='Se actualizarán los siguientes campos:\n'){
                         dialog.showConfirm(mensajeActualizar+'\n¿Desea proceder?', {
@@ -532,6 +540,8 @@ setUpdateValuesFromQR:function(){
                 var curpNuevo=valoresNuevos['CURP'];
                 var emailNuevo=valoresNuevos['Correo electrónico'];
                 var rfcNuevo=valoresNuevos['RFC'];
+
+                var path_img_qr=valoresNuevos['path_img_qr'];
 
                 if(regimenFiscal=='Persona Moral'){
                     var mensajeActualizarDiferenteRegimen='El Régimen Fiscal es diferente al registro actual.\nNo es posible actualizar\n';
@@ -591,6 +601,8 @@ setUpdateValuesFromQR:function(){
                         mensajeActualizar+='Actual: '+rfc+' - Nuevo: '+rfcNuevo+'\n\n';
                         valoresParaActualizar['RFC']=rfcNuevo;
                     }
+
+                    valoresParaActualizar['path_img_qr']=path_img_qr;
 
                     if(mensajeActualizar!='Se actualizarán los siguientes campos:\n'){
                         dialog.showConfirm(mensajeActualizar+'\n¿Quiere proceder?', {
