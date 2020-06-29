@@ -384,6 +384,7 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.tipoProducto.uniclick.no_viable_razon_ni=data.records[i].no_viable_razon_ni;
                                     selfProducts.tipoProducto.uniclick.assigned_user_id=data.records[i].assigned_user_id;
 
+                                    selfProducts.canal=data.records[i].canal_c;
                                     //Sección para establecer valor a campo de canal uniclick
                                     $(".canalUniclick").val(data.records[i].canal_c);
 
@@ -393,6 +394,9 @@ const NoViableField = customization.extend(TextField, {
                             selfProducts.successFlag=1;
 
                             selfProducts.render();
+
+                            $(".canalUniclick").val(selfProducts.canal);
+
                         }
                         App.tipoProducto=selfProducts.tipoProducto;
                     }
