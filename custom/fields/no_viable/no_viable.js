@@ -254,6 +254,7 @@ const NoViableField = customization.extend(TextField, {
                 success: _.bind(function (data) {
                     if (data) {
                         if(data.records.length>0){
+                            window.canal_uniclick="";
 
                             for(var i=0;i<data.records.length;i++){
                                 //Producto Leasing
@@ -385,6 +386,7 @@ const NoViableField = customization.extend(TextField, {
                                     selfProducts.tipoProducto.uniclick.assigned_user_id=data.records[i].assigned_user_id;
 
                                     selfProducts.canal=data.records[i].canal_c;
+                                    window.canal_uniclick=data.records[i].canal_c;
                                     //Sección para establecer valor a campo de canal uniclick
                                     $(".canalUniclick").val(data.records[i].canal_c);
 

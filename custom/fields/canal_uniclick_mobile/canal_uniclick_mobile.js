@@ -12,7 +12,7 @@ const CanalUniclickField = customization.extend(TextField, {
     },
 
     getListValuesCanal(){
-
+        window.canal_uniclick="";
         var selfList=this;
         app.alert.show('getlistaCanal', {
                 level: 'load',
@@ -27,6 +27,10 @@ const CanalUniclickField = customization.extend(TextField, {
                     }
                     app.alert.dismiss('getlistaCanal');
                     selfList.render();
+                    if(window.canal_uniclick != undefined){
+                        $(".canalUniclick").val(window.canal_uniclick);
+                    }
+                    
                 }, selfList),
             });
 

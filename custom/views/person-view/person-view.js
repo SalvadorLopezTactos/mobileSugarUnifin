@@ -744,7 +744,7 @@ validateCanalUniclick(fields, errors, callback){
         var userprod = (app.user.attributes.productos_c).replace(/\^/g, "");
 
 
-        if (valorCanal=="0" && userprod.includes('8') ) {
+        if (valorCanal=="0" && userprod.includes('8') || valorCanal=="" && userprod.includes('8')) {
             $(".canalUniclick").parent().parent().addClass('error');
             faltantesUniclickCanal += 1;
         }
