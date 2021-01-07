@@ -32,7 +32,8 @@
                     "actions": {
                         "barcode": "icon icon-qrcode",
                         "location": "icon icon-location-arrow",
-                        "hello": "icon icon-smile-o"
+                        "hello": "icon icon-smile-o",
+                        "user": "icon icon-user"//fa fa-user
                     }
                 }
             }
