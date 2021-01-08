@@ -30,6 +30,7 @@ const NoViableField = customization.extend(TextField, {
 
         this._super(options);
         this.successFlag=0;
+        window.cargaVistaCreacion=0;
         this.getListValuesNoViable();
 
         if(!this.context.get('create')){
@@ -631,7 +632,6 @@ const NoViableField = customization.extend(TextField, {
     },
 
     onAfterRender(){
-
         //Obtener la info de cada usuario por producto para saber si se permite la edición al respectivo campo No viable
         var id_current_user=App.user.get('id');
         //Leasing
@@ -701,6 +701,17 @@ const NoViableField = customization.extend(TextField, {
                 }
 
             }
+
+        }
+
+        if(window.cargaVistaCreacion>0){
+
+            dialog.showAlert('No es posible crear registros de Cuentas', {
+                title: 'No es posible crear registros de Cuentas',
+                buttonLabels: 'Aceptar'
+            });
+
+            $(".header__btn--cancel").trigger('click');
 
         }
     },

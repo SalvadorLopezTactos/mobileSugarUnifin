@@ -290,6 +290,7 @@ const AccountEditView = customization.extend(EditView, {
 
     onAfterShow(){
 
+        window.cargaVistaCreacion++;
         //Se establece función para evitar 'bug' que hace que se muestre 'Teléfonos' en el placeholder
         $('input').removeAttr('placeholder');
         $('span.placeholder:contains("Teléfonos")').html("");
