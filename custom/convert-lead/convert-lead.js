@@ -14,7 +14,13 @@ customization.registerRecordAction({
     
     stateHandlers: {
         isVisible(view, model) {
-            return true
+            var bandera;
+            if(model.get('subtipo_registro_c')!='4'){//Convertido
+                bandera=true;
+            }else{
+                bandera=false;
+            }
+            return bandera;
         },
     },
     
