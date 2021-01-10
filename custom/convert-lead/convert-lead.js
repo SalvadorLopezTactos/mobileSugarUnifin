@@ -128,7 +128,7 @@ customization.registerRecordAction({
 
         if (campos_req.length > 0) {
 
-            for (i = 0; i < campos_req.length; i++) {
+            for (var i = 0; i < campos_req.length; i++) {
 
                 var temp_req = campos_req[i];
 

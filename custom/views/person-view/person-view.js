@@ -21,6 +21,9 @@ const AccountEditView = customization.extend(EditView, {
 	initialize(options) {
 		this._super(options);
 
+        //Mensaje personalizado para validación de página web
+        app.error.errorName2Keys['validacion_pagina_web'] = 'ERROR_VALIDACION_PAGINA_WEB';
+
         this.optionsFromQR=options;
 
         //Condición para conocer si se el registro es nuevo o ya ha sido creado
@@ -142,6 +145,9 @@ const AccountEditView = customization.extend(EditView, {
             this.model.addValidationTask('RFC_validateP', _.bind(this.RFC_ValidatePadron, this));
         }
         */
+
+        /***************Valida Campo de Página Web ****************************/
+        this.model.addValidationTask('validaPaginaWeb', _.bind(this.validaPagWeb, this));
         
         //validación para mostrar en texto el nombre de los campos requeridos
         this.model.addValidationTask('valida_requeridos',_.bind(this.valida_requeridos, this));
@@ -974,6 +980,58 @@ RFC_ValidatePadronCreacion(fields, errors, callback){
         callback(null, fields, errors); 
     }
 },
+
+/*************Valida campo de Página Web*****************/
+    validaPagWeb: function (fields, errors, callback) {
+
+        var webSite = this.model.get('website');
+        if (webSite != "") {
+
+            var expreg = /^(https?:\/\/)?([\da-z\.-i][\w\-.]+)\.([\da-z\.i]{1,6})([\/\w\.=#%?-]*)*\/?$/;
+            if (!expreg.test(webSite)) {
+
+                dialog.showAlert("El formato de Página Web no es válido");
+                //Pinta el campo de color rojo pra evitar mostrar mensaje de "Campo requerido"
+                $('label.field__label:contains("Página Web")').parent().addClass('error');
+                errors['website'] = errors['website'] || {};
+                errors['website'].validacion_pagina_web = true;
+                callback(null, fields, errors);
+            } else {
+                app.api.call('GET', app.api.buildURL('validacion_sitio_web/?website=' + webSite), null, {
+                    success: _.bind(function (data) {
+                        //console.log(data);
+                        if (data == "02") {
+                            app.alert.show("error-website", {
+                                level: "error",
+                                autoClose: false,
+                                messages: "El dominio ingresado en Página Web no existe."
+                            });
+                            dialog.showAlert("El dominio ingresado en Página Web no existe");
+                            $('label.field__label:contains("Página Web")').parent().addClass('error');
+                            errors['website'] = errors['website'] || {};
+                            errors['website'].validacion_pagina_web = true;
+                            //callback(null, fields, errors);
+                        }
+                        if (data == "01") {
+                            app.alert.show("error-website", {
+                                level: "error",
+                                autoClose: false,
+                                messages: "El dominio ingresado en Página Web no existe o no esta activa."
+                            });
+                            dialog.showAlert("El dominio ingresado en Página Web no existe o no esta activa.");
+                            $('label.field__label:contains("Página Web")').parent().addClass('error');
+                            errors['website'] = errors['website'] || {};
+                            errors['website'].validacion_pagina_web = true;
+                            //callback(null, fields, errors);
+                        }
+                        callback(null, fields, errors);
+                    }, this),
+                });
+            }
+        } else {
+            callback(null, fields, errors);
+        }
+    },
 
 valida_requeridos: function(fields, errors, callback) {
         var campos = "";

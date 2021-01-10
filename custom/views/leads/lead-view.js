@@ -314,7 +314,7 @@ const LeadEditView = customization.extend(EditView, {
         switch (subTipoLead) {
             /*******SUB-TIPO SIN CONTACTAR*****/
             case '1':
-                if (tipoPersona == 'Persona Moral') {
+                if (tipoPersona == '3') {
                     campos_req.push('nombre_empresa_c');
                 }
                 else {
@@ -323,7 +323,7 @@ const LeadEditView = customization.extend(EditView, {
                 break;
             /********SUB-TIPO CONTACTADO*******/
             case '2':
-                if (tipoPersona == 'Persona Moral') {
+                if (tipoPersona == '3') {
                     campos_req.push('nombre_empresa_c');
                 }
                 else {

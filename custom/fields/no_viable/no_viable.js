@@ -704,7 +704,7 @@ const NoViableField = customization.extend(TextField, {
 
         }
 
-        if(window.cargaVistaCreacion>0){
+        if(window.cargaVistaCreacion>0 && this.context.isCreate()){
 
             dialog.showAlert('No es posible crear registros de Cuentas', {
                 title: 'No es posible crear registros de Cuentas',
